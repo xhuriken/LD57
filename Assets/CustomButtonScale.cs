@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 using Shapes;
 
 public class CustomButtonScale : CustomButtonBase
@@ -27,12 +26,13 @@ public class CustomButtonScale : CustomButtonBase
         _originalTextPos = _text.transform.localPosition;
 
         _ballDisc.Radius = 0f;
+        Debug.Log(_ballDisc.Radius);
     }
 
     public override void OnPointerEnter(PointerEventData eventData)
     {
         base.OnPointerEnter(eventData);
-
+        Debug.Log("OnPointerEnter");
         //_ballAnim.SetTrigger("Show");
 
         _text.transform.DOScale(toScale, duration).SetEase(Ease.InOutSine);
