@@ -15,13 +15,13 @@ public abstract class CustomButtonBase : MonoBehaviour, IPointerEnterHandler, IP
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
         // Set Cursor
-        m_audio.PlayOneShot(hover);
+        m_audio.PlayOneShot(hover, 0.6f);
     }
 
     public virtual void OnPointerClick(PointerEventData eventData)
     {
         // Play audio
-        m_audio.PlayOneShot(pressed);
+        m_audio.PlayOneShot(pressed, 0.8f);
 
     }
 
