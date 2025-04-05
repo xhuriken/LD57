@@ -56,6 +56,7 @@ public class RedBall : MonoBehaviour
         switch (currentState)
         {
             case RedBallState.Spawn:
+                // On peut aussi déclencher le clic pendant le spawn si besoin
                 ClickEvent();
 
                 m_rb.velocity *= 0.99f;
@@ -73,15 +74,15 @@ public class RedBall : MonoBehaviour
                     break;
                 }
                 m_rb.velocity *= 0.99f;
-
                 if (m_rb.velocity.magnitude < 0.01f)
                     m_rb.velocity = Vector2.zero;
-                
+
                 ClickEvent();
 
                 break;
 
             case RedBallState.Click:
+                // Une fois dans l'état Click, la machine à click pourra appeler ActivateClickEvent()
                 currentState = RedBallState.Idle;
                 break;
 
@@ -109,7 +110,8 @@ public class RedBall : MonoBehaviour
                 break;
         }
     }
-    //Function for manage click and drag
+
+    // Fonction privée qui gère l'action de clic
     private void ClickEvent()
     {
         if (!isClickable)
@@ -145,6 +147,14 @@ public class RedBall : MonoBehaviour
             isDragged = true;
         }
     }
+
+    // Méthode publique qui permet d'activer la fonction ClickEvent depuis une machine à click
+    public void ActivateClickEvent()
+    {
+        // On peut, ici, déclencher le ClickEvent (si besoin, vous pouvez ajouter des contrôles supplémentaires)
+        ClickEvent();
+    }
+
     private bool IsMouseOver()
     {
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
