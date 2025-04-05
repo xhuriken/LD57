@@ -3,12 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Bumper
+  - Ball
+  - FirstBall
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Objects
   - Water
   - UI
   - 
