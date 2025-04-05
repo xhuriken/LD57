@@ -22,6 +22,15 @@ public class rbsm : MonoBehaviour
     [Header("Utils")]
     private Vector3 dragOffset;
     private bool isDragged = false;
+    private float lastSoundTime = -Mathf.Infinity;
+
+    [Header("Particules/SFX")]
+    //Clips
+    public AudioClip as_spawn;
+    public AudioClip as_cantplace;
+    //Particules
+    //Nothing
+    private AudioSource m_audioSource;
 
     private enum RbsmState { Idle, Drag, Create }
     private RbsmState currentState = RbsmState.Idle;
@@ -32,6 +41,7 @@ public class rbsm : MonoBehaviour
         m_rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         circleCollider = GetComponent<CircleCollider2D>();
+        m_audioSource = GetComponent<AudioSource>();
         sp = transform.GetChild(6);
     }
 
@@ -120,6 +130,7 @@ public class rbsm : MonoBehaviour
             if (projRb != null)
             {
                 projRb.AddForce(transform.right * createProjectileForce, ForceMode2D.Impulse);
+                m_audioSource.PlayOneShot(as_spawn);
             }
             Debug.Log("Projectile créé dans la direction " + transform.rotation.eulerAngles.z + "°");
         }
@@ -246,6 +257,12 @@ public class rbsm : MonoBehaviour
         Vector2 repulseDirection = (transform.position - other.transform.position).normalized;
         Debug.Log("RepulseDraggedWith direction: " + repulseDirection);
         m_rb.AddForce(repulseDirection * bumpForce, ForceMode2D.Impulse);
+
+        if (Time.time - lastSoundTime >= 2f)
+        {
+            m_audioSource.PlayOneShot(as_cantplace, 0.7f);
+            lastSoundTime = Time.time;
+        }
 
         StartCoroutine(ResetKinematicState(m_rb, thisWasKinematic));
     }

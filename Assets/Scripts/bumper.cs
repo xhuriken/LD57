@@ -15,9 +15,11 @@ public class Bumper : MonoBehaviour
     [Header("Utils")]
     private Vector3 dragOffset;
     private bool isDragged = false;
+    private float lastSoundTime = -Mathf.Infinity;
 
     [Header("Particules/SFX")]
     //Clips
+    public AudioClip as_cantplace;
     public AudioClip as_bump1;
     public AudioClip as_bump2;
     public AudioClip as_bump3;
@@ -236,6 +238,12 @@ public class Bumper : MonoBehaviour
         Vector2 repulseDirection = (transform.position - other.transform.position).normalized;
         Debug.Log("RepulseDraggedWith direction: " + repulseDirection);
         m_rb.AddForce(repulseDirection * bumpForce, ForceMode2D.Impulse);
+
+        if (Time.time - lastSoundTime >= 2f)
+        {
+            m_audioSource.PlayOneShot(as_cantplace, 0.7f);
+            lastSoundTime = Time.time;
+        }
 
         StartCoroutine(ResetKinematicState(m_rb, thisWasKinematic));
     }

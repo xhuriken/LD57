@@ -332,6 +332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bumpForce: 8
   rotationSpeed: 50
+  as_cantplace: {fileID: 8300000, guid: 0b8d3d83527f5bb4eb39c91062d744f9, type: 3}
   as_bump1: {fileID: 8300000, guid: 262ad183ee377e24a8048da64e985a34, type: 3}
   as_bump2: {fileID: 8300000, guid: 39f6d0860328be846a1fc4db10cff153, type: 3}
   as_bump3: {fileID: 8300000, guid: 8fa03b2942356614a961994549d54dc9, type: 3}
