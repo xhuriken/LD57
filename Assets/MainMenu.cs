@@ -31,7 +31,7 @@ public class MainMenu : MonoBehaviour
     public Vector3 defaultCamPos = new Vector3(0, 0, -10f);
 
     private bool isinTransition = false;
-
+    private bool AlreadyPlay = false;
     void Start()
     {
         LeftSection = transform.GetChild(0).GetComponent<RectTransform>();
@@ -101,13 +101,23 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
     public void Play()
     {
+        if (!AlreadyPlay)
+        {
+            AlreadyPlay = true;
+            GameManager.Instance.isStarted = true;
+            Camera.main.transform.DOMove(defaultCamPos, 1f)
+                .SetEase(Ease.InOutSine)
+                .OnComplete(() => Debug.Log("Camera reached default position"));
+        }
+
         ToggleMenu();
-        GameManager.Instance.isStarted = true;
-        Camera.main.transform.DOMove(defaultCamPos, 1f)
-            .SetEase(Ease.InOutSine)
-            .OnComplete(() => Debug.Log("Camera reached default position"));
     }
 
     public void ToggleMenu()
