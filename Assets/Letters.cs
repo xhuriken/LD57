@@ -19,12 +19,16 @@ public class Letters : MonoBehaviour
     public float tweenDuration = 0.5f;
     public Ease tweenEase = Ease.InOutSine;
 
+    [Header("SFX")]
+    public AudioClip hover;
+    private AudioSource m_audio;
     private void Start()
     {
         _startPosition = transform.localPosition;
         _startRotation = transform.localEulerAngles;
         _startScale = transform.localScale;
 
+        m_audio = transform.parent.GetComponent<AudioSource>();
         //hoverPosition = _startPosition;
         //hoverRotation = _startRotation;
         //hoverScale = _startScale;   
@@ -42,6 +46,7 @@ public class Letters : MonoBehaviour
             if (isNowHovered && !_isHovered)
             {
                 OnHoverEnter();
+                m_audio.PlayOneShot(hover);
             }
             else if (!isNowHovered && _isHovered)
             {
