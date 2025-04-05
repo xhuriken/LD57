@@ -66,6 +66,8 @@ public class GameManager : MonoBehaviour
             //    - if this two ball coorespond to a recipe, Instanciate the ShapeObject relate to the recipe at the center of all the ball (If its Bumper, instantiate var GameObject named ShapeBumper)
             //    - if Space Pressed : add force to all ball selected in direction of the center of all balls, start merge animation for balls. Remove ShapeObject
             //    - After merge animation, Instantiate the new object (Bumper or SpawnRedBall) at the center of all balls selected
+
+            //AND if user press Space when CraftModeCollider is growing or cancel, make anything happen
         }
 
 

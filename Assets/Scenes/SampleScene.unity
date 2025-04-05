@@ -2684,6 +2684,7 @@ MonoBehaviour:
   isDragging: 0
   menuShown: 0
   isStarted: 0
+  CraftMode: 0
 --- !u!1 &1619195406
 GameObject:
   m_ObjectHideFlags: 0
