@@ -17,7 +17,7 @@ public class Letters : MonoBehaviour
 
     [Header("Tween Settings")]
     public float tweenDuration = 0.5f;
-    public Ease tweenEase = Ease.InOutSine;
+    public Ease tweenEase = Ease.InOutBack;
 
     [Header("SFX")]
     public AudioClip hover;

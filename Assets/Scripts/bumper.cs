@@ -43,7 +43,8 @@ public class Bumper : MonoBehaviour
         switch (currentState)
         {
             case BumperState.Idle:
-
+                if(GameManager.Instance.menuShown)
+                    return;
                 if (Input.GetMouseButtonDown(1) && IsMouseOver())
                 {
                     Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -57,6 +58,8 @@ public class Bumper : MonoBehaviour
                 break;
 
             case BumperState.Drag:
+                if (GameManager.Instance.menuShown)
+                    return;
                 GameManager.Instance.isDragging = true;
                 // Rotation avec la molette pendant le drag
                 float scroll = Input.GetAxis("Mouse ScrollWheel");

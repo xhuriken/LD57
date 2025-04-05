@@ -26,7 +26,7 @@ public class CustomButtonScale : CustomButtonBase
         _originalTextPos = _text.transform.localPosition;
 
         _ballDisc.Radius = 0f;
-        Debug.Log(_ballDisc.Radius);
+        //Debug.Log(_ballDisc.Radius);
     }
 
     public override void OnPointerEnter(PointerEventData eventData)
@@ -35,13 +35,13 @@ public class CustomButtonScale : CustomButtonBase
         Debug.Log("OnPointerEnter");
         //_ballAnim.SetTrigger("Show");
 
-        _text.transform.DOScale(toScale, duration).SetEase(Ease.InOutSine);
-        _text.transform.DOLocalMoveX(_originalTextPos.x + moveDistance, duration).SetEase(Ease.InOutSine);
+        _text.transform.DOScale(toScale, duration).SetEase(Ease.InOutBack);
+        _text.transform.DOLocalMoveX(_originalTextPos.x + moveDistance, duration).SetEase(Ease.InOutBack);
 
 
         DOTween.To(() => _ballDisc.Radius, x => _ballDisc.Radius = x, ballTargetRadius, ballAnimDuration)
                 .SetEase(Ease.OutBounce);
-        _ball.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.InOutSine);
+        _ball.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.InOutBack);
     }
 
     public override void OnPointerExit(PointerEventData eventData)
@@ -50,11 +50,11 @@ public class CustomButtonScale : CustomButtonBase
 
         //_ballAnim.SetTrigger("Mask");
 
-        _text.transform.DOScale(OriginalScale, duration).SetEase(Ease.InOutSine);
-        _text.transform.DOLocalMoveX(_originalTextPos.x, duration).SetEase(Ease.InOutSine);
+        _text.transform.DOScale(OriginalScale, duration).SetEase(Ease.InOutBack);
+        _text.transform.DOLocalMoveX(_originalTextPos.x, duration).SetEase(Ease.InOutBack);
 
         DOTween.To(() => _ballDisc.Radius, x => _ballDisc.Radius = x, 0f, ballAnimDuration)
                 .SetEase(Ease.InBack);
-        _ball.transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InOutSine);
+        _ball.transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InOutBack);
     }
 }

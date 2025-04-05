@@ -166,7 +166,8 @@ public class BlueBall : MonoBehaviour
     {
         if (!isClickable)
             return;
-
+        if (GameManager.Instance.menuShown)
+            return;
         if (Input.GetMouseButtonDown(0) && IsMouseOver() && !GameManager.Instance.isDragging)
         {
             clickCount++;

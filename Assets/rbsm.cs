@@ -50,7 +50,8 @@ public class rbsm : MonoBehaviour
         switch (currentState)
         {
             case RbsmState.Idle:
-                
+                if (GameManager.Instance.menuShown)
+                    return;
                 if (Input.GetMouseButtonDown(1) && IsMouseOver())
                 {
                     Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -74,6 +75,8 @@ public class rbsm : MonoBehaviour
                 break;
 
             case RbsmState.Drag:
+                if (GameManager.Instance.menuShown)
+                    return;
                 GameManager.Instance.isDragging = true;
             
                 float scroll = Input.GetAxis("Mouse ScrollWheel");
