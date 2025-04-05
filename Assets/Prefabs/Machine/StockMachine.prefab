@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8107701301953502593}
   - component: {fileID: 3494286655472444206}
   - component: {fileID: 5242128684313072064}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4866,7 +4866,7 @@ GameObject:
   - component: {fileID: 8356268434021045649}
   - component: {fileID: 2884639187729042951}
   - component: {fileID: 2112321444177618843}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: StockMachine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
