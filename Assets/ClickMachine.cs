@@ -19,7 +19,6 @@ public class ClickerMachine : MonoBehaviour
     [Header("Animation Settings")]
  
     public Animator animator;
-    public Animator anBall;
 
     [Header("Exit Settings")]
 
@@ -89,8 +88,7 @@ public class ClickerMachine : MonoBehaviour
             animator.SetTrigger("Click");
             Debug.Log("Trigger 'Click' envoyé.");
 
-            anBall = ball.GetComponent<Animator>();
-            anBall.SetTrigger("Click");
+            ball.GetComponent<INumber>().Click();
         }
 
       
