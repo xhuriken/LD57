@@ -945,7 +945,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bumpForce: 5
   rotationSpeed: 15
-  createPrefab: {fileID: 0}
+  createPrefab: {fileID: 6226084741178426538, guid: 63d96dd58e5ed20479d2f17c3144da53, type: 3}
   createProjectileForce: 3
   createInterval: 10
   sp: {fileID: 0}
