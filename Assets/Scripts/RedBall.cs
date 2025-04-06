@@ -170,22 +170,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
         }
         if (Input.GetMouseButtonDown(0) && IsMouseOver() && !GameManager.Instance.isDragging)
         {
-            clickCount++;
-            if (clickCount >= duplicateCount)
-            {
-                clickCount = 0;
-                currentState = RedBallState.Duplicate;
-                m_audioSource.PlayOneShot(as_duplicate);
-                m_animator.SetTrigger("Duplicate");
-                Instantiate(duplicateParticules, transform.position, Quaternion.identity);
-            }
-            else
-            {
-                currentState = RedBallState.Click;
-                m_audioSource.PlayOneShot(as_click);
-                m_animator.SetTrigger("Click");
-                Instantiate(clickParticules, transform.position, Quaternion.identity);
-            }
+            Click();
         }
         if (Input.GetMouseButtonDown(1) && IsMouseOver())
         {
@@ -272,7 +257,27 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
     }
     public void ApplyCraftForce(Vector2 direction)
     {
-        //todo
+        //inused but keep here
+    }
+
+    public void Click()
+    {
+        clickCount++;
+        if (clickCount >= duplicateCount)
+        {
+            clickCount = 0;
+            currentState = RedBallState.Duplicate;
+            m_audioSource.PlayOneShot(as_duplicate);
+            m_animator.SetTrigger("Duplicate");
+            Instantiate(duplicateParticules, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            currentState = RedBallState.Click;
+            m_audioSource.PlayOneShot(as_click);
+            m_animator.SetTrigger("Click");
+            Instantiate(clickParticules, transform.position, Quaternion.identity);
+        }
     }
 
     public bool IsMouseOver()
