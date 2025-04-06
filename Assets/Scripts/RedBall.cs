@@ -110,8 +110,9 @@ public class RedBall : MonoBehaviour, ICraftableBall
 
     private void ClickEvent()
     {
-        if (HasCraftModeCollider())
+        if (HasCraftModeCollider() && !(GameManager.Instance.selectedBalls.Count > 0 && GameManager.Instance.selectedBalls[0] == this))
         {
+            Debug.Log("[BlueBall] Click disabled because CraftModeCollider is present on " + gameObject.name);
             return;
         }
         if (!isClickable)
@@ -124,7 +125,19 @@ public class RedBall : MonoBehaviour, ICraftableBall
             {
                 ToggleCraftingSelection();
             }
+
+            if (IsMouseOver() && Input.GetMouseButtonDown(1))
+            {
+                Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                dragOffset = transform.position - (Vector3)mouseWorldPos;
+                m_rb.velocity = Vector2.zero;
+                GameManager.Instance.isDragging = true;
+                isDragged = true;
+                currentState = RedBallState.Drag;
+            }
             return;
+
+
         }
         if (Input.GetMouseButtonDown(0) && IsMouseOver() && !GameManager.Instance.isDragging)
         {

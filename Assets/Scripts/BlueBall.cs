@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static RedBall;
 
 public class BlueBall : MonoBehaviour, ICraftableBall
 {
@@ -48,6 +49,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall
     private float bottomY;
     private int direction = 1;
 
+    public GameObject selectionIndicator;
     void Start()
     {
         m_animator = GetComponent<Animator>();
@@ -163,15 +165,32 @@ public class BlueBall : MonoBehaviour, ICraftableBall
     }
     private void ClickEvent()
     {
-        if (HasCraftModeCollider())
+        if (HasCraftModeCollider() && !(GameManager.Instance.selectedBalls.Count > 0 && GameManager.Instance.selectedBalls[0] == this))
         {
-            Debug.Log("[RedBall] Click disabled because CraftModeCollider is present on " + gameObject.name);
+            Debug.Log("[BlueBall] Click disabled because CraftModeCollider is present on " + gameObject.name);
             return;
         }
-        if (!isClickable)
+        if (!isClickable) return;
+        if (GameManager.Instance.menuShown) return;
+
+        if (GameManager.Instance.CraftMode)
+        {
+            if (IsMouseOver() && Input.GetMouseButtonDown(0))
+            {
+                ToggleCraftingSelection();
+            }
+            if (IsMouseOver() && Input.GetMouseButtonDown(1))
+            {
+                Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                dragOffset = transform.position - (Vector3)mouseWorldPos;
+                m_rb.velocity = Vector2.zero;
+                GameManager.Instance.isDragging = true;
+                isDragged = true;
+                currentState = BlueBallState.Drag;
+            }
             return;
-        if (GameManager.Instance.menuShown)
-            return;
+        }
+
         if (Input.GetMouseButtonDown(0) && IsMouseOver() && !GameManager.Instance.isDragging)
         {
             clickCount++;
@@ -191,10 +210,6 @@ public class BlueBall : MonoBehaviour, ICraftableBall
                 Instantiate(clickParticules, transform.position, Quaternion.identity);
             }
         }
-        if (Input.GetMouseButtonDown(0) && IsMouseOver() && GameManager.Instance.CraftMode)
-        {
-            ToggleCraftingSelection();
-        }
         if (Input.GetMouseButtonDown(1) && IsMouseOver())
         {
             Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -210,7 +225,6 @@ public class BlueBall : MonoBehaviour, ICraftableBall
     {
         if (GameManager.Instance.selectedBalls.Contains(this))
         {
-            // Pour la première balle, recliquer annule tout le CraftMode
             if (GameManager.Instance.selectedBalls[0] == this)
             {
                 Debug.Log("[BlueBall] First ball clicked again, cancelling CraftMode: " + gameObject.name);
@@ -241,16 +255,39 @@ public class BlueBall : MonoBehaviour, ICraftableBall
             }
             Debug.Log("[BlueBall] Selecting ball for crafting: " + gameObject.name);
             currentState = BlueBallState.Crafting;
-            // Si BlueBall possède un visuel de sélection, activez-le ici
+            if (selectionIndicator != null)
+            {
+                selectionIndicator.SetActive(true);
+            }
+            if (GameManager.Instance.selectedBalls.Count == 0 && GameManager.Instance.craftModeColliderPrefab != null)
+            {
+                GameManager.Instance.currentCraftModeCollider = Instantiate(
+                    GameManager.Instance.craftModeColliderPrefab,
+                    transform.position,
+                    Quaternion.identity,
+                    transform);
+                Debug.Log("[BlueBall] Instantiated CraftModeCollider on first selected ball: " + gameObject.name);
+            }
             GameManager.Instance.RegisterSelectedBall(this);
         }
     }
 
     public void CancelCraftingVisual()
     {
-        // Implémentation similaire à RedBall (adapter si un visuel existe)
+        if (selectionIndicator != null)
+        {
+            selectionIndicator.SetActive(false);
+        }
         currentState = BlueBallState.Idle;
-        Debug.Log("[BlueBall] Crafting visual cancelled for ball: " + gameObject.name);
+        Debug.Log("[RedBall] Crafting visual cancelled for ball: " + gameObject.name);
+        foreach (Transform child in transform)
+        {
+            if (child.CompareTag("CraftCollider"))
+            {
+                Destroy(child.gameObject);
+                Debug.Log("[RedBall] Destroyed CraftCollider child on ball: " + gameObject.name);
+            }
+        }
     }
 
     public void ApplyCraftForce(Vector2 direction)
