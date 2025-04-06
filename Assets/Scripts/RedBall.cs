@@ -100,6 +100,21 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
                     Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     transform.position = mouseWorldPos + (Vector2)dragOffset;
                     m_rb.velocity = Vector2.zero;
+
+                    //Verify if the ball is Outside the craft area, if so, deselect it
+                    if (GameManager.Instance.CraftMode && GameManager.Instance.currentCraftModeCollider != null)
+                    {
+                        float dist = Vector2.Distance(GameManager.Instance.currentCraftModeCollider.transform.position, transform.position);
+                        float radius = GameManager.Instance.currentCraftModeCollider.GetComponent<CraftModeCollider>().radius;
+                        if (dist > radius)
+                        {
+                            Debug.Log("[RedBall] Dragged out of craft area, deselected.");
+                            if (selectionIndicator != null)
+                                selectionIndicator.SetActive(false);
+                            GameManager.Instance.UnregisterSelectedBall(this);
+
+                        }
+                    }
                 }
                 if (Input.GetMouseButtonUp(1) || (m_data != null && m_data.isInhaled))
                 {
@@ -107,6 +122,8 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
                     GameManager.Instance.isDragging = false;
                     isDragged = false;
                 }
+
+
                 break;
             case RedBallState.Inhale:
                 m_rb.velocity = Vector2.zero;

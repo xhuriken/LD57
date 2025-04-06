@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &674263616935145441
 Transform:
   m_ObjectHideFlags: 0
@@ -71,9 +71,9 @@ MonoBehaviour:
   angUnitInput: 1
   angRadiansStart: 0
   angRadiansEnd: 2.3561945
-  radius: 0.57
+  radius: 0.55
   radiusSpace: 0
-  thickness: 0.08
+  thickness: 0.04
   thicknessSpace: 0
   arcEndCaps: 0
   matchDashSpacingToSize: 1

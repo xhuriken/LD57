@@ -89,6 +89,17 @@ public class GameManager : MonoBehaviour
 
         if (CraftMode || isInTransition) UpdateCraftLine();
 
+        //Place ShapeObject ALWAYS at the centers of all balls:
+        if (CraftMode && currentCraftPreview != null && selectedBalls.Count > 0)
+        {
+            Vector3 center = Vector3.zero;
+            foreach (ICraftableBall ball in selectedBalls)
+            {
+                center += ball.Transform.position;
+            }
+            center /= selectedBalls.Count;
+            currentCraftPreview.transform.position = center;
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
