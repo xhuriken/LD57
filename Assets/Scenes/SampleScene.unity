@@ -2868,6 +2868,12 @@ MonoBehaviour:
       count: 5
     previewPrefab: {fileID: 7400269335471674966, guid: dad0965872116564c8945c46eeb99a7f, type: 3}
     finalPrefab: {fileID: 7400269335471674966, guid: ca4e56138f4c6ce44a8b38e76048d350, type: 3}
+  - recipeName: StockMachine
+    requirements:
+    - ballType: RedBall
+      count: 20
+    previewPrefab: {fileID: 9221366279253860388, guid: c9c598e5386832142a99247b5a04b01b, type: 3}
+    finalPrefab: {fileID: 9221366279253860388, guid: eb1637c822554ce4ebb5f266fe043cd5, type: 3}
   craftCursor: {fileID: 2800000, guid: 526ab00963574294cb322b0576988457, type: 3}
   craftCursorHotspot: {x: 35, y: 35}
   defaultCursor: {fileID: 0}

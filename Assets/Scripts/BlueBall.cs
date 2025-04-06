@@ -90,6 +90,18 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
 
         }
 
+        //En frixion le drag marchais pas une fois sur deux, je devenais fou, alors j'ai mis ça
+        //Ce code ecrase tout les state, si jamais il est en frixion et qu'on veux drag, ON DRAG, pas juste 'on drag' gnagnagna
+        if (Input.GetMouseButtonDown(1) && IsMouseOver() && currentState == BlueBallState.Friction)
+        {
+            dragOffset = transform.position - (Vector3)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            m_rb.velocity = Vector2.zero;
+            GameManager.Instance.isDragging = true;
+            isDragged = true;
+            currentState = BlueBallState.Drag;
+            Debug.Log("[BlueBall] Forced Drag from Friction state");
+        }
+
         switch (currentState)
         {
             case BlueBallState.Spawn:
@@ -131,6 +143,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                 }
                 break;
             case BlueBallState.Drag:
+                Debug.Log("Test");
                 if (Input.GetMouseButton(1))
                 {
                     Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -148,9 +161,11 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                 }
                 break;
             case BlueBallState.Friction:
-                if (currentState == BlueBallState.Drag || isDragged)
+                if (isDragged)
+                {
+                    currentState = BlueBallState.Drag;
                     break;
-
+                }
                 if (isClickable)
                     ClickEvent();
                 m_rb.velocity *= frictionFactor;
@@ -164,6 +179,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                     currentState = BlueBallState.Idle;
                 }
                 break;
+
 
             case BlueBallState.Inhale:
                 m_rb.velocity = Vector2.zero;
@@ -234,8 +250,12 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
             dragOffset = transform.position - (Vector3)mouseWorldPos;
             m_rb.velocity = Vector2.zero;
             GameManager.Instance.isDragging = true;
-            currentState = BlueBallState.Drag;
             isDragged = true;
+            currentState = BlueBallState.Drag;
+
+            originY = transform.position.y;
+            topY = originY + amplitude;
+            bottomY = originY - amplitude;
         }
     }
 

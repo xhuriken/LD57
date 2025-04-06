@@ -286,7 +286,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
     }
     public string CraftBallType { get { return "RedBall"; } }
     public Transform Transform { get { return transform; } }
-    public int Number { get; private set; } = 2;
+    public int Number { get; private set; } = 1;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
