@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public bool menuShown = false;
     public bool isStarted = false;
     public bool CraftMode = false;
+    public bool NeverCraft = true;
 
     [Header("Crafting Settings")]
     public GameObject craftModeColliderPrefab;
@@ -86,6 +87,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if(!NeverCraft)
+            return;
 
         if (CraftMode || isInTransition) UpdateCraftLine();
 

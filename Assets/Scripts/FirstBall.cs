@@ -21,7 +21,6 @@ public class FirstBall : MonoBehaviour
 
     // Booléens pour le suivi de l'état de la souris et cliquabilité
     private bool isDragged = false;
-    private bool isMouseOver = false;
     [Header("Utils")]
     public bool isClickable = true;  // Flag similaire à RedBall
 
@@ -133,19 +132,6 @@ public class FirstBall : MonoBehaviour
         }
     }
 
-    private void OnMouseEnter()
-    {
-        isMouseOver = true;
-        // Possibilité d'afficher un indicateur visuel ici
-    }
-
-    private void OnMouseExit()
-    {
-        if (!isDragged)
-        {
-            isMouseOver = false;
-        }
-    }
 
     private IEnumerator SpawnProp()
     {

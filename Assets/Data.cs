@@ -6,6 +6,7 @@ public class Data : MonoBehaviour
 {
     [Header("Utils")]
     public bool isInhaled = false;
+    public bool isInhaledGrayViolet = false;
     public bool isFreeze = false;
 
     private void Start()

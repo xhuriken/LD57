@@ -8,6 +8,8 @@ TagManager:
   - Ball
   - FirstBall
   - CraftCollider
+  - GrayViolet
+  - TextHelpCraft
   layers:
   - Default
   - TransparentFX

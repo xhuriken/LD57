@@ -1,159 +1,190 @@
+using Febucci.UI;
 using Shapes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static BlueBall; // si nï¿½cessaire
+using static RedBall;
 
-public class RedBall : MonoBehaviour, ICraftableBall, INumber
+public class GrayVioletBall : MonoBehaviour, ICraftableBall
 {
-    [Header("Properties")]
-    [SerializeField] private int duplicateCount = 3;
-    public float force = 2f;
-    private int clickCount = 0;
-
     // Components
     private Animator m_animator;
     private Rigidbody2D m_rb;
     private CircleCollider2D m_cc;
     private Vector3 dragOffset;
-    private Data m_data;
 
     [Header("Utils")]
     public bool isDragged = false;
-    public bool isClickable = true;
 
-    [Header("Particles/SFX")]
+    [Header("Particules/SFX")]
     public AudioClip as_duplicate;
     public AudioClip as_click;
     public GameObject duplicateParticules;
     public GameObject clickParticules;
     private AudioSource m_audioSource;
 
-    public enum RedBallState { Spawn, Idle, Click, Duplicate, Drag, Inhale, Crafting, CraftingMoving }
-    public RedBallState currentState = RedBallState.Spawn;
+    private enum GrayBallState { Idle, Drag, Inhale, Craft, Crafting }
+    private GrayBallState currentState = GrayBallState.Idle;
 
+    [Header("Idle Movement")]
+    private Vector3 idleCenter;
+    private float idleRadius = 3f;
+    private float idleSpeed = 50f; // degrés/seconde
+    private float currentAngle = 0f;
+
+    public GameObject pointEffector;
     public GameObject selectionIndicator;
+    public GameObject SpaceCraftHelp;
+    public string CraftBallType { get { return "GrayVioletBall"; } }
 
-    private void Start()
+    void Start()
     {
+        SpaceCraftHelp = GameObject.FindGameObjectWithTag("TextHelpCraft");
+        if (pointEffector != null)
+        {
+            pointEffector.GetComponent<PointEffector2D>().enabled = false;
+            pointEffector.GetComponent<CircleCollider2D>().enabled = false;
+        }
         m_animator = GetComponent<Animator>();
         m_cc = GetComponent<CircleCollider2D>();
         m_audioSource = GetComponent<AudioSource>();
         m_rb = GetComponent<Rigidbody2D>();
-        m_data = GetComponent<Data>();
 
-        currentState = RedBallState.Spawn;
-        StartCoroutine(TransitionFromSpawn());
-    }
-
-    private IEnumerator TransitionFromSpawn()
-    {
-        yield return new WaitForSeconds(1f);
-        if (currentState == RedBallState.Spawn)
+        GameObject zoneObject = GameObject.Find("Zone");
+        if (zoneObject != null)
         {
-            currentState = RedBallState.Idle;
+            Zone zoneScript = zoneObject.GetComponent<Zone>();
+            if (zoneScript != null)
+            {
+                float width = zoneScript.Width;
+                float height = zoneScript.Height;
+                int side = Random.Range(0, 4);
+                Vector3 spawnPoint = Vector3.zero;
+                switch (side)
+                {
+                    case 0: // haut
+                        spawnPoint = new Vector3(Random.Range(-width / 2f, width / 2f), height / 2f, 0);
+                        break;
+                    case 1: // bas
+                        spawnPoint = new Vector3(Random.Range(-width / 2f, width / 2f), -height / 2f, 0);
+                        break;
+                    case 2: // gauche
+                        spawnPoint = new Vector3(-width / 2f, Random.Range(-height / 2f, height / 2f), 0);
+                        break;
+                    case 3: // droite
+                        spawnPoint = new Vector3(width / 2f, Random.Range(-height / 2f, height / 2f), 0);
+                        break;
+                }
+                idleCenter = spawnPoint;
+                transform.position = idleCenter + (Vector3)(Vector2.right * idleRadius);
+                currentAngle = 0f;
+            }
+            else
+            {
+                Debug.LogError("[GrayVioletBall] Aucun script Zone trouvé sur l'objet 'Zone'.");
+            }
+        }
+        else
+        {
+            Debug.LogError("[GrayVioletBall] Aucun GameObject nommé 'Zone' trouvé dans la scène.");
         }
     }
 
-    private void Update()
+    void Update()
     {
-        if (HasCraftModeCollider() && !m_rb.isKinematic)
+        if (GameManager.Instance.CraftMode)
         {
-            m_rb.isKinematic = true;
+            ClickEvent();
         }
-        else if (!HasCraftModeCollider() && m_rb.isKinematic)
-        {
-            m_rb.isKinematic = false;
-        }
-
-        //Pour la GrayViolet
-        m_animator.SetBool("isInhaled", m_data.isInhaledGrayViolet);
-
 
         switch (currentState)
         {
-            case RedBallState.Spawn:
-                // On peut aussi dï¿½clencher le clic pendant le spawn si besoin
-                ClickEvent();
-                m_rb.velocity *= 0.99f;
-                if (m_rb.velocity.magnitude < 0.01f)
-                    m_rb.velocity = Vector2.zero;
-                break;
-            case RedBallState.Idle:
-
-                if (m_data != null && m_data.isInhaled)
+            case GrayBallState.Idle:
+                if (!GameManager.Instance.CraftMode)
                 {
-                    currentState = RedBallState.Inhale;
-                    m_animator.SetTrigger("Inhale");
-                    m_rb.velocity = Vector2.zero;
-                    break;
+                    IdleMovement();
                 }
-                m_rb.velocity *= 0.99f;
-                if (m_rb.velocity.magnitude < 0.01f)
-                    m_rb.velocity = Vector2.zero;
-
-                ClickEvent();
                 break;
-            case RedBallState.Click:
-                // Une fois dans l'ï¿½tat Click, la machine ï¿½ click pourra appeler ActivateClickEvent()
-                currentState = RedBallState.Idle;
-                break;
-            case RedBallState.Duplicate:
-                currentState = RedBallState.Idle;
-                break;
-            case RedBallState.Drag:
+            case GrayBallState.Drag:
                 if (Input.GetMouseButton(1))
                 {
                     Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     transform.position = mouseWorldPos + (Vector2)dragOffset;
                     m_rb.velocity = Vector2.zero;
 
-                    //Verify if the ball is Outside the craft area, if so, deselect it
                     if (GameManager.Instance.CraftMode && GameManager.Instance.currentCraftModeCollider != null)
                     {
                         float dist = Vector2.Distance(GameManager.Instance.currentCraftModeCollider.transform.position, transform.position);
                         float radius = GameManager.Instance.currentCraftModeCollider.GetComponent<CraftModeCollider>().radius;
                         if (dist > radius)
                         {
-                            Debug.Log("[RedBall] Dragged out of craft area, deselected.");
+                            Debug.Log("[GrayVioletBall] Dragged out of craft area, deselected.");
                             if (selectionIndicator != null)
                                 selectionIndicator.SetActive(false);
                             GameManager.Instance.UnregisterSelectedBall(this);
-
                         }
                     }
                 }
-                if (Input.GetMouseButtonUp(1) || (m_data != null && m_data.isInhaled))
+                if (Input.GetMouseButtonUp(1))
                 {
-                    currentState = RedBallState.Idle;
+                    currentState = (GameManager.Instance.CraftMode ? GrayBallState.Craft : (m_rb.isKinematic ? GrayBallState.Inhale : GrayBallState.Idle));
                     GameManager.Instance.isDragging = false;
                     isDragged = false;
                 }
-
-
                 break;
-            case RedBallState.Inhale:
+            case GrayBallState.Inhale:
+                m_rb.velocity = Vector2.zero;
+                m_rb.isKinematic = true;
+                if (pointEffector != null)
+                {
+                    var effector = pointEffector.GetComponent<PointEffector2D>();
+                    if (effector != null && !effector.enabled)
+                        effector.enabled = true;
+                    var effectorCollider = pointEffector.GetComponent<CircleCollider2D>();
+                    if (effectorCollider != null && !effectorCollider.enabled)
+                        effectorCollider.enabled = true;
+                }
+                if (!GameManager.Instance.NeverCraft)
+                {
+                    SpaceCraftHelp.GetComponent<TypewriterByCharacter>().ShowText("Press Space for Craft");
+                    GameManager.Instance.NeverCraft = true;
+                }
+
+                if(GameManager.Instance.NeverCraft && Input.GetKeyDown(KeyCode.Space))
+                {
+                    SpaceCraftHelp.GetComponent<TypewriterByCharacter>().StartDisappearingText();
+                }
+
+                if (Input.GetMouseButtonDown(1) && IsMouseOver())
+                {
+                    Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    dragOffset = transform.position - (Vector3)mouseWorldPos;
+                    m_rb.velocity = Vector2.zero;
+                    GameManager.Instance.isDragging = true;
+                    currentState = GrayBallState.Drag;
+                    isDragged = true;
+                }
+                
+                break;
+            case GrayBallState.Craft:
                 m_rb.velocity = Vector2.zero;
                 break;
-            case RedBallState.Crafting:
-                ClickEvent();
-                m_rb.velocity = Vector2.zero;
-                break;
-            case RedBallState.CraftingMoving:
+            case GrayBallState.Crafting:
                 break;
         }
     }
 
+    private void IdleMovement()
+    {
+        currentAngle += idleSpeed * Time.deltaTime;
+        float rad = currentAngle * Mathf.Deg2Rad;
+        Vector3 offset = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0) * idleRadius;
+        transform.position = idleCenter + offset;
+    }
+
     private void ClickEvent()
     {
-        if (HasCraftModeCollider() && !(GameManager.Instance.selectedBalls.Count > 0 && GameManager.Instance.selectedBalls[0] == this))
-        {
-            //Debug.Log("[BlueBall] Click disabled because CraftModeCollider is present on " + gameObject.name);
-            return;
-        }
-        if (!isClickable)
-            return;
         if (GameManager.Instance.menuShown)
             return;
         if (GameManager.Instance.CraftMode)
@@ -162,7 +193,6 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
             {
                 ToggleCraftingSelection();
             }
-
             if (IsMouseOver() && Input.GetMouseButtonDown(1) && !HasCraftModeCollider())
             {
                 Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -170,24 +200,8 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
                 m_rb.velocity = Vector2.zero;
                 GameManager.Instance.isDragging = true;
                 isDragged = true;
-                currentState = RedBallState.Drag;
+                currentState = GrayBallState.Drag;
             }
-            return;
-
-
-        }
-        if (Input.GetMouseButtonDown(0) && IsMouseOver() && !GameManager.Instance.isDragging)
-        {
-            Click();
-        }
-        if (Input.GetMouseButtonDown(1) && IsMouseOver())
-        {
-            Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            dragOffset = transform.position - (Vector3)mouseWorldPos;
-            m_rb.velocity = Vector2.zero;
-            GameManager.Instance.isDragging = true;
-            currentState = RedBallState.Drag;
-            isDragged = true;
         }
     }
 
@@ -224,7 +238,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
                 }
             }
             Debug.Log("[RedBall] Selecting ball for crafting: " + gameObject.name);
-            currentState = RedBallState.Crafting;
+            currentState = GrayBallState.Craft;
             if (selectionIndicator != null)
             {
                 selectionIndicator.SetActive(true);
@@ -248,44 +262,25 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
         {
             selectionIndicator.SetActive(false);
         }
-        currentState = RedBallState.Idle;
-        Debug.Log("[RedBall] Crafting visual cancelled for ball: " + gameObject.name);
+        currentState = m_rb.isKinematic ? GrayBallState.Inhale : GrayBallState.Idle;
+        Debug.Log("[GrayVioletBall] Crafting visual cancelled for ball: " + gameObject.name);
         foreach (Transform child in transform)
         {
             if (child.CompareTag("CraftCollider"))
             {
                 Destroy(child.gameObject);
-                Debug.Log("[RedBall] Destroyed CraftCollider child on ball: " + gameObject.name);
+                Debug.Log("[GrayVioletBall] Destroyed CraftCollider child on ball: " + gameObject.name);
             }
         }
     }
+
     private bool HasCraftModeCollider()
     {
         return GetComponentInChildren<CraftModeCollider>() != null;
     }
+
     public void ApplyCraftForce(Vector2 direction)
     {
-        //inused but keep here
-    }
-
-    public void Click()
-    {
-        clickCount++;
-        if (clickCount >= duplicateCount)
-        {
-            clickCount = 0;
-            currentState = RedBallState.Duplicate;
-            m_audioSource.PlayOneShot(as_duplicate);
-            m_animator.SetTrigger("Duplicate");
-            Instantiate(duplicateParticules, transform.position, Quaternion.identity);
-        }
-        else
-        {
-            currentState = RedBallState.Click;
-            m_audioSource.PlayOneShot(as_click);
-            m_animator.SetTrigger("Click");
-            Instantiate(clickParticules, transform.position, Quaternion.identity);
-        }
     }
 
     public bool IsMouseOver()
@@ -305,44 +300,15 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
         }
     }
 
-    private IEnumerator SpawnProp()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        GameObject newObject = Instantiate(gameObject, transform.position, Quaternion.identity);
-        newObject.name = gameObject.name;
-        Vector2 randomDir = Random.insideUnitCircle.normalized;
-        Debug.Log("[RedBall] SpawnProp random direction: " + randomDir);
-        newObject.GetComponent<Rigidbody2D>().AddForce(randomDir * force, ForceMode2D.Impulse);
-        yield return null;
+        if (currentState != GrayBallState.Drag && currentState != GrayBallState.Inhale)
+        {
+            currentState = GrayBallState.Inhale;
+            m_rb.isKinematic = true;
+            Debug.Log("[GrayVioletBall] Transition to Inhale");
+        }
     }
-    public string CraftBallType { get { return "RedBall"; } }
+
     public Transform Transform { get { return transform; } }
-    public int Number { get; private set; } = 1;
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Bumper"))
-        {
-            isDragged = false;
-            currentState = RedBallState.Idle;
-        }
-        if (collision.CompareTag("GrayViolet"))
-        {
-            if (m_data != null && !m_data.isInhaledGrayViolet)
-            {
-                m_data.isInhaledGrayViolet = true;
-            }
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if(collision.CompareTag("GrayViolet"))
-        {
-            if (m_data != null && m_data.isInhaledGrayViolet)
-            {
-                m_data.isInhaledGrayViolet = false;
-            }
-        }
-
-    }
 }
