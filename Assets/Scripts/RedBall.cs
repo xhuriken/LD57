@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static BlueBall; // si nécessaire
+using static BlueBall; // si nï¿½cessaire
 
 public class RedBall : MonoBehaviour, ICraftableBall, INumber
 {
@@ -70,6 +70,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
         switch (currentState)
         {
             case RedBallState.Spawn:
+                // On peut aussi dï¿½clencher le clic pendant le spawn si besoin
                 ClickEvent();
                 m_rb.velocity *= 0.99f;
                 if (m_rb.velocity.magnitude < 0.01f)
@@ -86,9 +87,11 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
                 m_rb.velocity *= 0.99f;
                 if (m_rb.velocity.magnitude < 0.01f)
                     m_rb.velocity = Vector2.zero;
+
                 ClickEvent();
                 break;
             case RedBallState.Click:
+                // Une fois dans l'ï¿½tat Click, la machine ï¿½ click pourra appeler ActivateClickEvent()
                 currentState = RedBallState.Idle;
                 break;
             case RedBallState.Duplicate:
