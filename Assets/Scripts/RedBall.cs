@@ -148,12 +148,7 @@ public class RedBall : MonoBehaviour
         }
     }
 
-    // Méthode publique qui permet d'activer la fonction ClickEvent depuis une machine à click
-    public void ActivateClickEvent()
-    {
-        // On peut, ici, déclencher le ClickEvent (si besoin, vous pouvez ajouter des contrôles supplémentaires)
-        ClickEvent();
-    }
+    
 
     private bool IsMouseOver()
     {

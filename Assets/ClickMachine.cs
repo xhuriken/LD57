@@ -2,27 +2,29 @@ using System.Collections;
 using UnityEngine;
 
 public class ClickerMachine : MonoBehaviour
-{
-    // États de la machine
-    private enum MachineState { WaitBall, Click }
+{ 
+    private enum MachineState { WaitBall, Click, Exit }
     private MachineState currentState = MachineState.WaitBall;
 
     [Header("Ball Placement Settings")]
-    // Point de placement de la balle (si non défini, le centre de la machine sera utilisé)
+
     public Transform placementPoint;
-    // Décalage vertical pour le placement (la balle sera descendue de ce montant)
+
     public float placementYOffset = 0.5f;
-    // Durée du glissement de la balle vers le placement
+ 
     public float slideDuration = 0.2f;
-    // Délai avant d'activer l'événement de clic sur la balle
+    
     public float clickDelay = 0.5f;
 
     [Header("Animation Settings")]
-    // Animator de la machine pour déclencher une animation "Click" si nécessaire
+ 
     public Animator animator;
+    public Animator anBall;
 
-    // Référence à la balle actuellement placée (composant RedBall)
-    private RedBall currentBall;
+    [Header("Exit Settings")]
+
+    public float bumpForce = 5f;
+   
 
     private void Start()
     {
@@ -30,36 +32,37 @@ public class ClickerMachine : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // N'accepte une nouvelle balle que si la machine est en état WaitBall
+     
         if (currentState != MachineState.WaitBall)
             return;
 
         if (collision.CompareTag("Ball"))
         {
+           
           
-
-            // Lancer la coroutine pour glisser la balle et activer l'événement de clic
             StartCoroutine(SlideAndClick(collision.gameObject));
         }
     }
 
     /// <summary>
-    /// Fait glisser la balle vers le point de placement puis, après un délai, appelle ActivateClickEvent() sur la balle.
+    /// Fait glisser la balle vers le point de placement avec un offset, déclenche l'animation click,
+    /// puis passe à l'état Exit.
     /// </summary>
     /// <param name="ball">La balle à traiter</param>
     private IEnumerator SlideAndClick(GameObject ball)
     {
-        // Passage en état Click pour bloquer l'entrée d'autres balles
+      
         currentState = MachineState.Click;
 
-        // Calcul de la position cible avec décalage vertical
-        Vector3 targetPosition = (placementPoint != null) ? placementPoint.position : transform.position;
+        Vector3 targetPosition = placementPoint != null ? placementPoint.position : transform.position;
         targetPosition.y -= placementYOffset;
 
-        // Enregistrer la position de départ (peut servir pour d'autres calculs)
-        Vector3 startPosition = ball.transform.position;
+       
+        Vector3 ballStartPosition = ball.transform.position;
 
-        // Désactiver la physique de la balle pendant le glissement
+        float elapsed = 0f;
+
+   
         Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
@@ -67,40 +70,64 @@ public class ClickerMachine : MonoBehaviour
             rb.isKinematic = true;
         }
 
-        // Interpoler la position de la balle entre startPosition et targetPosition
-        float elapsed = 0f;
+    
         while (elapsed < slideDuration)
         {
-            ball.transform.position = Vector3.Lerp(startPosition, targetPosition, elapsed / slideDuration);
+            ball.transform.position = Vector3.Lerp(ballStartPosition, targetPosition, elapsed / slideDuration);
             elapsed += Time.deltaTime;
             yield return null;
         }
         ball.transform.position = targetPosition;
 
-        // Rattacher la balle à la machine (optionnel)
+     
         ball.transform.SetParent(transform);
+        Debug.Log("Balle placée avec décalage au point: " + targetPosition);
 
-        // Récupérer le composant RedBall de la balle
-        currentBall = ball.GetComponent<RedBall>();
-
-        // Déclencher une animation de click sur la machine (si assignée)
+   
         if (animator != null)
         {
             animator.SetTrigger("Click");
-            Debug.Log("Trigger 'Click' envoyé à l'Animator de la machine.");
+            Debug.Log("Trigger 'Click' envoyé.");
+
+            anBall = ball.GetComponent<Animator>();
+            anBall.SetTrigger("Click");
         }
 
-        // Attendre un délai avant d'activer l'événement de clic sur la balle
+      
         yield return new WaitForSeconds(clickDelay);
 
-        // Appeler la méthode publique de la balle pour déclencher son ClickEvent
-        if (currentBall != null)
+ 
+        currentState = MachineState.Exit;
+        StartCoroutine(ExitBall(ball, ballStartPosition, targetPosition));
+    }
+
+    /// <summary>
+    /// Détache la balle, réactive sa physique et lui applique une force dans le sens d'entrée.
+    /// </summary>
+    /// <param name="ball">La balle à expulser</param>
+    /// <param name="ballStartPosition">Position initiale de la balle lors de l'entrée</param>
+    /// <param name="targetPosition">Position finale de la balle dans la machine</param>
+    private IEnumerator ExitBall(GameObject ball, Vector3 ballStartPosition, Vector3 targetPosition)
+    {
+     
+        ball.transform.SetParent(null);
+
+  
+        Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
+        if (rb != null)
         {
-            currentBall.ActivateClickEvent();
-            Debug.Log("ActivateClickEvent() appelée sur la balle.");
+            rb.isKinematic = false;
         }
 
-        // Revenir à l'état d'attente pour accepter une nouvelle balle
+        Vector2 exitDirection = (targetPosition - ballStartPosition).normalized;
+        if (rb != null)
+        {
+            rb.AddForce(exitDirection * bumpForce, ForceMode2D.Impulse);
+            Debug.Log("Balle expulsée dans la direction: " + exitDirection);
+        }
+
+        yield return new WaitForSeconds(0.1f);
+
         currentState = MachineState.WaitBall;
     }
 }
