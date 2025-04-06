@@ -1166,6 +1166,10 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 1595549738977409768, guid: eb1637c822554ce4ebb5f266fe043cd5, type: 3}
+      propertyPath: number
+      value: 
+      objectReference: {fileID: 5968837779126870004, guid: 7098357888a775041937e5ffa0dd9db0, type: 3}
     - target: {fileID: 6816056764612179154, guid: eb1637c822554ce4ebb5f266fe043cd5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.32
@@ -2675,6 +2679,8 @@ MonoBehaviour:
   defaultCursor: {fileID: 0}
   currentCraftModeCollider: {fileID: 0}
   isInTransition: 0
+  isFinalizingCraft: 0
+  lineFadeDuration: 1
 --- !u!1 &1619195406
 GameObject:
   m_ObjectHideFlags: 0

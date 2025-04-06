@@ -128,7 +128,6 @@ public class Bumper : MonoBehaviour
                 AudioClip as_bump = bumpSounds[randomIndex];
 
                 m_audioSource.PlayOneShot(as_bump, 0.7f);
-                
                 Vector2 forceDirection = transform.up;
                 ballRigidbody.AddForce(-forceDirection * bumpForce, ForceMode2D.Impulse);
             }

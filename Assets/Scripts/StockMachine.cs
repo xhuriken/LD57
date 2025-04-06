@@ -19,6 +19,7 @@ public class StockMachine : MonoBehaviour
     public AudioClip as_inhale2;
     //Particules
     //Nothing
+    public GameObject number;
     private AudioSource m_audioSource;
     void Start()
     {
@@ -115,6 +116,7 @@ public class StockMachine : MonoBehaviour
         AudioClip as_inhale = (randomIndex == 0) ? as_inhale1 : as_inhale2;
         m_audioSource.PlayOneShot(as_inhale, 0.7f);
         m_animator.SetTrigger("Bounce");
+        Instantiate(number, obj.transform.position, Quaternion.identity);
         yield return new WaitForSeconds(0.5f);
 
         if (discComponent != null)

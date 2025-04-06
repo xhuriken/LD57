@@ -287,4 +287,13 @@ public class BlueBall : MonoBehaviour, ICraftableBall
 
     public string CraftBallType { get { return "BlueBall"; } }
     public Transform Transform { get { return transform; } }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Bumper"))
+        {
+            isDragged = false;
+            currentState = BlueBallState.Friction;
+        }
+    }
 }

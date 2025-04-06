@@ -32,6 +32,7 @@ public class rbsm : MonoBehaviour
     //Nothing
     private AudioSource m_audioSource;
 
+
     private enum RbsmState { Idle, Drag, Create }
     private RbsmState currentState = RbsmState.Idle;
     private int cardinalDirectionIndex = 0; 

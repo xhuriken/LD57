@@ -261,4 +261,13 @@ public class RedBall : MonoBehaviour, ICraftableBall
     }
     public string CraftBallType { get { return "RedBall"; } }
     public Transform Transform { get { return transform; } }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Bumper"))
+        {
+            isDragged = false;
+            currentState = RedBallState.Idle;
+        }
+    }
 }
