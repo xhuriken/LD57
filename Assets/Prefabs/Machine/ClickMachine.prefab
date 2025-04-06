@@ -560,7 +560,6 @@ MonoBehaviour:
   animator: {fileID: 0}
   bumpForce: 5
   exitDelay: 1
-  as_cantplace: {fileID: 8300000, guid: 0b8d3d83527f5bb4eb39c91062d744f9, type: 3}
 --- !u!82 &1487867790185925472
 AudioSource:
   m_ObjectHideFlags: 0
