@@ -34,10 +34,10 @@ public class MainMenu : MonoBehaviour
     private bool AlreadyPlay = false;
     void Start()
     {
-        LeftSection = transform.GetChild(0).GetComponent<RectTransform>();
-        Button = LeftSection.transform.GetChild(0).GetComponent<RectTransform>();
-        Icons = transform.GetChild(1).GetComponent<RectTransform>();
-        Logo = transform.GetChild(2).GetComponent<RectTransform>();
+        LeftSection = transform.GetChild(1).GetComponent<RectTransform>();
+        Button = LeftSection.transform.GetChild(1).GetComponent<RectTransform>();
+        Icons = transform.GetChild(2).GetComponent<RectTransform>();
+        Logo = transform.GetChild(3).GetComponent<RectTransform>();
         transitionObj = GameObject.Find("Transition");
         foreach (Transform child in Button.transform)
         {

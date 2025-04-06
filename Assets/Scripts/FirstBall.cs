@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static RedBall;
 
 public class FirstBall : MonoBehaviour
 {
@@ -32,8 +33,8 @@ public class FirstBall : MonoBehaviour
     private AudioSource m_audioSource;
 
     // Machine à états
-    private enum PropState { Idle, Click, Duplicate, Drag }
-    private PropState currentState = PropState.Idle;
+    private enum FirstBallState { Idle, Click, Duplicate, Drag }
+    private FirstBallState currentState = FirstBallState.Idle;
 
     void Start()
     {
@@ -47,22 +48,25 @@ public class FirstBall : MonoBehaviour
     {
         switch (currentState)
         {
-            case PropState.Idle:
-                // Vérification de cliquabilité et présence de la souris sur l'objet
+            case FirstBallState.Idle:
+
+                if (!isClickable) return;
+                if (GameManager.Instance.menuShown) return;
+
                 if (isClickable && Input.GetMouseButtonDown(0) && IsMouseOver() && !GameManager.Instance.isDragging)
                 {
                     clickCount++;
                     if (clickCount >= duplicateCount)
                     {
                         clickCount = 0;
-                        currentState = PropState.Duplicate;
+                        currentState = FirstBallState.Duplicate;
                         m_audioSource.PlayOneShot(as_duplicate);
                         m_animator.SetTrigger("Duplicate");
                         Instantiate(duplicateParticules, transform.position, Quaternion.identity);
                     }
                     else
                     {
-                        currentState = PropState.Click;
+                        currentState = FirstBallState.Click;
                         m_audioSource.PlayOneShot(as_click);
                         m_animator.SetTrigger("Click");
                         Instantiate(clickParticules, transform.position, Quaternion.identity);
@@ -75,20 +79,23 @@ public class FirstBall : MonoBehaviour
                     dragOffset = transform.position - (Vector3)mouseWorldPos;
                     m_rb.velocity = Vector2.zero;
                     GameManager.Instance.isDragging = true;
-                    currentState = PropState.Drag;
+                    currentState = FirstBallState.Drag;
                     isDragged = true;
                 }
+                m_rb.velocity *= 0.99f;
+                if (m_rb.velocity.magnitude < 0.01f)
+                    m_rb.velocity = Vector2.zero;
                 break;
 
-            case PropState.Click:
-                currentState = PropState.Idle;
+            case FirstBallState.Click:
+                currentState = FirstBallState.Idle;
                 break;
 
-            case PropState.Duplicate:
-                currentState = PropState.Idle;
+            case FirstBallState.Duplicate:
+                currentState = FirstBallState.Idle;
                 break;
 
-            case PropState.Drag:
+            case FirstBallState.Drag:
                 if (Input.GetMouseButton(1))
                 {
                     Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -97,7 +104,7 @@ public class FirstBall : MonoBehaviour
                 }
                 if (Input.GetMouseButtonUp(1))
                 {
-                    currentState = PropState.Idle;
+                    currentState = FirstBallState.Idle;
                     GameManager.Instance.isDragging = false;
                     isDragged = false;
                 }
@@ -148,5 +155,14 @@ public class FirstBall : MonoBehaviour
         Debug.Log("SpawnProp random direction: " + randomDir);
         newObject.GetComponent<Rigidbody2D>().AddForce(randomDir * force, ForceMode2D.Impulse);
         yield return null;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Bumper"))
+        {
+            isDragged = false;
+            currentState = FirstBallState.Idle;
+        }
     }
 }

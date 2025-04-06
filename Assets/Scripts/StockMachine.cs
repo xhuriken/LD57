@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Shapes;
+using TMPro;
 
 public class StockMachine : MonoBehaviour
 {
@@ -33,17 +34,27 @@ public class StockMachine : MonoBehaviour
         switch (currentState)
         {
             case StockMachineState.Idle:
+                if (GameManager.Instance.CraftMode)
+                    break;
+
                 Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, actionRadius);
                 foreach (Collider2D col in colliders)
                 {
                     if (objectInhalable.Contains(col.tag))
                     {
+                        if (col.GetComponent<FirstBall>() != null)
+                        {
+                            Debug.Log("[StockMachine] Skipping " + col.gameObject.name);
+                            continue;
+                        }
+
                         currentState = StockMachineState.Inhale;
                         StartCoroutine(InhaleObject(col.gameObject));
                         break;
                     }
                 }
                 break;
+
 
             case StockMachineState.Inhale:
                 break;
@@ -116,7 +127,32 @@ public class StockMachine : MonoBehaviour
         AudioClip as_inhale = (randomIndex == 0) ? as_inhale1 : as_inhale2;
         m_audioSource.PlayOneShot(as_inhale, 0.7f);
         m_animator.SetTrigger("Bounce");
-        Instantiate(number, obj.transform.position, Quaternion.identity);
+
+
+        INumber numberComponent = obj.GetComponent<INumber>();
+        int numberToAdd = 1;
+        if (numberComponent != null)
+        {
+            numberToAdd = numberComponent.Number;
+        }
+        else
+        {
+            Debug.Log("[StockMachine] (Set 1) No INumber number is not Initialize to : " + obj.name);
+        }
+
+        GameManager.Instance.AddNumber(numberToAdd);
+
+        GameObject NumberTextFloating = Instantiate(number, transform.position, Quaternion.identity);
+
+        TextMeshPro textMesh = NumberTextFloating.GetComponentInChildren<TextMeshPro>();
+        if (textMesh != null)
+        {
+            textMesh.text = numberToAdd.ToString();
+        }
+        else
+        {
+            Debug.LogWarning("[StockMachine] Aucun TextMeshPro trouvé dans Number instancié !");
+        }
         yield return new WaitForSeconds(0.5f);
 
         if (discComponent != null)

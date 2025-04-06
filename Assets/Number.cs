@@ -1,18 +1,23 @@
 using UnityEngine;
 using DG.Tweening;
+using TMPro; // Ajoute pour TextMeshPro
 
 public class Number : MonoBehaviour
 {
     private Vector2 randomDirection;
     private float randomRotationSpeed;
 
+    private TextMeshPro textMesh;
+
     void Start()
     {
+        textMesh = GetComponentInChildren<TextMeshPro>();
+
         transform.localScale = Vector3.zero;
 
         randomDirection = (Vector2.up + new Vector2(Random.Range(-0.1f, 0.1f), 0f)).normalized;
 
-        randomRotationSpeed = Random.Range(-90f, 90f); 
+        randomRotationSpeed = Random.Range(-90f, 90f);
 
         Sequence seq = DOTween.Sequence();
         seq.Append(transform.DOScale(1f, 0.1f).SetEase(Ease.OutBack));
@@ -34,7 +39,7 @@ public class Number : MonoBehaviour
         float duration = 0.3f;
         float elapsed = 0f;
 
-        float totalRotation = Random.Range(-180f, 180f); 
+        float totalRotation = Random.Range(-180f, 180f);
 
         while (elapsed < duration)
         {
@@ -48,5 +53,4 @@ public class Number : MonoBehaviour
             yield return null;
         }
     }
-
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static BlueBall; // si nécessaire
 
-public class RedBall : MonoBehaviour, ICraftableBall
+public class RedBall : MonoBehaviour, ICraftableBall, INumber
 {
     [Header("Properties")]
     [SerializeField] private int duplicateCount = 3;
@@ -50,11 +50,23 @@ public class RedBall : MonoBehaviour, ICraftableBall
     private IEnumerator TransitionFromSpawn()
     {
         yield return new WaitForSeconds(1f);
-        currentState = RedBallState.Idle;
+        if (currentState == RedBallState.Spawn)
+        {
+            currentState = RedBallState.Idle;
+        }
     }
 
     private void Update()
     {
+        if (HasCraftModeCollider() && !m_rb.isKinematic)
+        {
+            m_rb.isKinematic = true;
+        }
+        else if (!HasCraftModeCollider() && m_rb.isKinematic)
+        {
+            m_rb.isKinematic = false;
+        }
+
         switch (currentState)
         {
             case RedBallState.Spawn:
@@ -112,7 +124,7 @@ public class RedBall : MonoBehaviour, ICraftableBall
     {
         if (HasCraftModeCollider() && !(GameManager.Instance.selectedBalls.Count > 0 && GameManager.Instance.selectedBalls[0] == this))
         {
-            Debug.Log("[BlueBall] Click disabled because CraftModeCollider is present on " + gameObject.name);
+            //Debug.Log("[BlueBall] Click disabled because CraftModeCollider is present on " + gameObject.name);
             return;
         }
         if (!isClickable)
@@ -126,7 +138,7 @@ public class RedBall : MonoBehaviour, ICraftableBall
                 ToggleCraftingSelection();
             }
 
-            if (IsMouseOver() && Input.GetMouseButtonDown(1))
+            if (IsMouseOver() && Input.GetMouseButtonDown(1) && !HasCraftModeCollider())
             {
                 Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 dragOffset = transform.position - (Vector3)mouseWorldPos;
@@ -274,6 +286,7 @@ public class RedBall : MonoBehaviour, ICraftableBall
     }
     public string CraftBallType { get { return "RedBall"; } }
     public Transform Transform { get { return transform; } }
+    public int Number { get; private set; } = 2;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

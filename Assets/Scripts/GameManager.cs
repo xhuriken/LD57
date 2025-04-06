@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using System.Linq;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -44,6 +45,8 @@ public class GameManager : MonoBehaviour
     private LineRenderer craftLineRenderer;
     public float lineFadeDuration = 1.0f;
 
+    public TextMeshProUGUI numberText;
+    public int globalNumber = 0;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -63,20 +66,27 @@ public class GameManager : MonoBehaviour
         else
             Camera.main.transform.position = new Vector3(0, 0, -10);
 
-
+        numberText.text = globalNumber.ToString();
 
         GameObject lineObj = new GameObject("CraftLine");
         craftLineRenderer = lineObj.AddComponent<LineRenderer>();
         craftLineRenderer.positionCount = 0;
         craftLineRenderer.startWidth = 0.1f;
         craftLineRenderer.endWidth = 0.1f;
-        craftLineRenderer.material = new Material(Shader.Find("Sprites/Default")); 
+        craftLineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         craftLineRenderer.startColor = Color.white;
         craftLineRenderer.endColor = Color.white;
     }
 
+    public void AddNumber(int Number)
+    {
+        globalNumber += Number;
+        numberText.text = globalNumber.ToString();
+    }
+
     private void Update()
     {
+
         if (CraftMode || isInTransition) UpdateCraftLine();
 
 

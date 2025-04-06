@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static RedBall;
 
-public class BlueBall : MonoBehaviour, ICraftableBall
+public class BlueBall : MonoBehaviour, ICraftableBall, INumber
 {
     [Header("Properties")]
     [SerializeField] private int duplicateCount = 3;
@@ -70,12 +70,26 @@ public class BlueBall : MonoBehaviour, ICraftableBall
     IEnumerator TransitionFromSpawn()
     {
         yield return new WaitForSeconds(1f);
-        currentState = BlueBallState.Idle;
-        m_rb.velocity = new Vector2(0, oscillationSpeed * direction);
+        if (currentState == BlueBallState.Spawn)
+        {
+            currentState = BlueBallState.Idle;
+            m_rb.velocity = new Vector2(0, oscillationSpeed * direction);
+
+        }
     }
 
     void Update()
     {
+        if (HasCraftModeCollider() && !m_rb.isKinematic)
+        {
+            m_rb.isKinematic = true;
+        }
+        else if (!HasCraftModeCollider() && m_rb.isKinematic)
+        {
+            m_rb.isKinematic = false;
+
+        }
+
         switch (currentState)
         {
             case BlueBallState.Spawn:
@@ -134,6 +148,9 @@ public class BlueBall : MonoBehaviour, ICraftableBall
                 }
                 break;
             case BlueBallState.Friction:
+                if (currentState == BlueBallState.Drag || isDragged)
+                    break;
+
                 if (isClickable)
                     ClickEvent();
                 m_rb.velocity *= frictionFactor;
@@ -147,6 +164,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall
                     currentState = BlueBallState.Idle;
                 }
                 break;
+
             case BlueBallState.Inhale:
                 m_rb.velocity = Vector2.zero;
                 break;
@@ -167,7 +185,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall
     {
         if (HasCraftModeCollider() && !(GameManager.Instance.selectedBalls.Count > 0 && GameManager.Instance.selectedBalls[0] == this))
         {
-            Debug.Log("[BlueBall] Click disabled because CraftModeCollider is present on " + gameObject.name);
+            //Debug.Log("[BlueBall] Click disabled because CraftModeCollider is present on " + gameObject.name);
             return;
         }
         if (!isClickable) return;
@@ -179,7 +197,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall
             {
                 ToggleCraftingSelection();
             }
-            if (IsMouseOver() && Input.GetMouseButtonDown(1))
+            if (IsMouseOver() && Input.GetMouseButtonDown(1) && !HasCraftModeCollider())
             {
                 Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 dragOffset = transform.position - (Vector3)mouseWorldPos;
@@ -324,12 +342,22 @@ public class BlueBall : MonoBehaviour, ICraftableBall
 
     public string CraftBallType { get { return "BlueBall"; } }
     public Transform Transform { get { return transform; } }
+    public int Number { get; private set; } = 2;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
         if (collision.CompareTag("Bumper"))
         {
             isDragged = false;
+            currentState = BlueBallState.Friction;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (currentState != BlueBallState.Drag)
+        {
             currentState = BlueBallState.Friction;
         }
     }
