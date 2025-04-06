@@ -4,41 +4,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class FirstProp : MonoBehaviour
+public class FirstBall : MonoBehaviour
 {
-    //Ca c'est un Prop, object commun entre touts les forme
-    //Ce script sert a donnée les characteristique de la forme
-
-
     [Header("Properties")]
-    [SerializeField]
-    private int duplicateCount = 3;
-    [SerializeField]
-    private GameObject duplicateBall;
+    [SerializeField] private int duplicateCount = 3;
+    [SerializeField] private GameObject duplicateBall;
     public float force = 2f;
     private int clickCount = 0;
-    //Component
+
+    // Composants
     private Animator m_animator;
     private Rigidbody2D m_rb;
     private CircleCollider2D m_cc;
     private Vector3 dragOffset;
-    //bools
+
+    // Booléens pour le suivi de l'état de la souris et cliquabilité
     private bool isDragged = false;
     private bool isMouseOver = false;
+    [Header("Utils")]
+    public bool isClickable = true;  // Flag similaire à RedBall
 
     [Header("Particules/SFX")]
-    //Clips
     public AudioClip as_duplicate;
     public AudioClip as_click;
-    //Particules
     public GameObject duplicateParticules;
     public GameObject clickParticules;
     private AudioSource m_audioSource;
 
-    //State machine
-    private enum PropState { Idle, Click, Duplicate, Drag, }
+    // Machine à états
+    private enum PropState { Idle, Click, Duplicate, Drag }
     private PropState currentState = PropState.Idle;
-
 
     void Start()
     {
@@ -53,8 +48,8 @@ public class FirstProp : MonoBehaviour
         switch (currentState)
         {
             case PropState.Idle:
-                //Left click = Click
-                if (Input.GetMouseButtonDown(0) && isMouseOver && !GameManager.Instance.isDragging)
+                // Vérification de cliquabilité et présence de la souris sur l'objet
+                if (isClickable && Input.GetMouseButtonDown(0) && IsMouseOver() && !GameManager.Instance.isDragging)
                 {
                     clickCount++;
                     if (clickCount >= duplicateCount)
@@ -73,10 +68,9 @@ public class FirstProp : MonoBehaviour
                         Instantiate(clickParticules, transform.position, Quaternion.identity);
                     }
                 }
-                //Right Click = Drag
-                if (Input.GetMouseButtonDown(1) && isMouseOver)
+                // Clic droit pour drag si la souris est sur l'objet
+                if (Input.GetMouseButtonDown(1) && IsMouseOver())
                 {
-                    //Relative offset
                     Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     dragOffset = transform.position - (Vector3)mouseWorldPos;
                     m_rb.velocity = Vector2.zero;
@@ -111,19 +105,38 @@ public class FirstProp : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Méthode custom pour détecter si la souris est sur l'objet.
+    /// </summary>
+    /// <returns>true si la souris est sur l'objet, false sinon.</returns>
+    public bool IsMouseOver()
+    {
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Collider2D col = GetComponent<Collider2D>();
+        if (col == null)
+            return false;
+        if (col is CircleCollider2D circle)
+        {
+            float rad = circle.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
+            return Vector2.Distance(transform.position, mousePos) <= rad;
+        }
+        else
+        {
+            return col.OverlapPoint(mousePos);
+        }
+    }
+
     private void OnMouseEnter()
     {
         isMouseOver = true;
-        //Debug.Log("Mouse is over the object");
+        // Possibilité d'afficher un indicateur visuel ici
     }
 
     private void OnMouseExit()
     {
-
         if (!isDragged)
         {
             isMouseOver = false;
-            //Debug.Log("Mouse is not over the object anymore");
         }
     }
 
@@ -132,6 +145,7 @@ public class FirstProp : MonoBehaviour
         GameObject newObject = Instantiate(duplicateBall, transform.position, Quaternion.identity);
         newObject.name = "Ball";
         Vector2 randomDir = Random.insideUnitCircle.normalized;
+        Debug.Log("SpawnProp random direction: " + randomDir);
         newObject.GetComponent<Rigidbody2D>().AddForce(randomDir * force, ForceMode2D.Impulse);
         yield return null;
     }

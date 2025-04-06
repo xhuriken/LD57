@@ -17,6 +17,8 @@ GameObject:
   - component: {fileID: 511754151901271701}
   - component: {fileID: 7539281244604695090}
   - component: {fileID: 706488801408942272}
+  - component: {fileID: 7804974842402948177}
+  - component: {fileID: 7513953970546769623}
   m_Layer: 6
   m_Name: BlueBall
   m_TagString: Ball
@@ -218,18 +220,16 @@ MonoBehaviour:
   duplicateCount: 3
   force: 4
   isDragged: 0
+  isClickable: 1
   as_duplicate: {fileID: 8300000, guid: 62efe3f80ec52df4ab54a4e0ad659bf9, type: 3}
   as_click: {fileID: 8300000, guid: 441a70337c31521438e4c2ccbd4d1bd7, type: 3}
   duplicateParticules: {fileID: 3392309590886141319, guid: 8855b583bd62a944589b8f82a47818de, type: 3}
   clickParticules: {fileID: 3392309590886141319, guid: c814d5de6fb50104391808ce665735b5, type: 3}
-  isInhaled: 0
   currentState: 0
-  isClickable: 1
   amplitude: 2
   oscillationSpeed: 2
   frictionFactor: 0.99
   frictionThreshold: 0.01
-  blueState: 0
 --- !u!82 &7539281244604695090
 AudioSource:
   m_ObjectHideFlags: 0
@@ -347,3 +347,30 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7804974842402948177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3504687067306247434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dd00799cce2d4a4889b6309ec07fa51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isInhaled: 0
+  isFreeze: 0
+--- !u!114 &7513953970546769623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3504687067306247434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fc1340ea7b50244fa8a97e9d7058728, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zone: {fileID: 0}
