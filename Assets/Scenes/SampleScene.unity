@@ -3263,7 +3263,7 @@ MonoBehaviour:
   isFinalizingCraft: 0
   lineFadeDuration: 1
   numberText: {fileID: 1422312199}
-  globalNumber: 3000
+  globalNumber: 5
 --- !u!1 &1619195406
 GameObject:
   m_ObjectHideFlags: 0

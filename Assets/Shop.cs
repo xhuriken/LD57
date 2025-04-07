@@ -292,6 +292,12 @@ public class Shop : MonoBehaviour
 
     IEnumerator ExpelObject(GameObject obj, Vector3 finalPos)
     {
+
+        IClickMachine clickMachine = obj.GetComponent<IClickMachine>();
+
+        clickMachine.isInMachine = true;
+        
+
         float expelDuration = 1f;
         float elapsed = 0f;
         Vector3 startPos = transform.position;
@@ -339,5 +345,7 @@ public class Shop : MonoBehaviour
             discComponent.AngRadiansStart = 0f;
             discComponent.AngRadiansEnd = 2f * Mathf.PI;
         }
+
+        clickMachine.isInMachine = false;
     }
 }

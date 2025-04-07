@@ -22,10 +22,10 @@ public class BounceWithinZone : MonoBehaviour
         Vector3 zoneCenter = zone.transform.position;
         float zoneWidth = zone.zone.Width;
         float zoneHeight = zone.zone.Height;
-        float leftBound =   (zoneCenter.x - zoneWidth / 2f ) + 0.1f;
-        float rightBound =  (zoneCenter.x + zoneWidth / 2f ) - 0.1f;
+        float leftBound = (zoneCenter.x - zoneWidth / 2f) + 0.1f;
+        float rightBound = (zoneCenter.x + zoneWidth / 2f) - 0.1f;
         float bottomBound = (zoneCenter.y - zoneHeight / 2f) + 0.1f;
-        float topBound =    (zoneCenter.y + zoneHeight / 2f) - 0.1f;
+        float topBound = (zoneCenter.y + zoneHeight / 2f) - 0.1f;
 
         float radius = 0f;
         if (circleCollider != null)
@@ -37,28 +37,28 @@ public class BounceWithinZone : MonoBehaviour
         Vector2 velocity = rb.velocity;
         bool collided = false;
 
-        //Left
+        // Left
         if (pos.x - radius < leftBound)
         {
             pos.x = leftBound + radius;
             velocity = Reflect(velocity, Vector2.right);
             collided = true;
         }
-        //Right
+        // Right
         else if (pos.x + radius > rightBound)
         {
             pos.x = rightBound - radius;
             velocity = Reflect(velocity, Vector2.left);
             collided = true;
         }
-        //Bottom
+        // Bottom
         if (pos.y - radius < bottomBound)
         {
             pos.y = bottomBound + radius;
             velocity = Reflect(velocity, Vector2.up);
             collided = true;
         }
-        //Top
+        // Top
         else if (pos.y + radius > topBound)
         {
             pos.y = topBound - radius;
@@ -70,11 +70,18 @@ public class BounceWithinZone : MonoBehaviour
         {
             transform.position = pos;
             rb.velocity = velocity;
+
+            BlueBall blueBall = GetComponent<BlueBall>();
+            if (blueBall != null && blueBall.currentState != BlueBall.BlueBallState.Friction)
+            {
+                blueBall.currentState = BlueBall.BlueBallState.Friction;
+                Debug.Log("[BounceWithinZone] BlueBall state changed to Friction.");
+            }
         }
     }
 
     Vector2 Reflect(Vector2 v, Vector2 n)
     {
-        return v - 2f * Vector2.Dot(v, n) * n; //Thanks google !
+        return v - 2f * Vector2.Dot(v, n) * n;
     }
 }
