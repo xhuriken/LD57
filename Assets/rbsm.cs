@@ -128,9 +128,17 @@ public class rbsm : MonoBehaviour
     {
         if (createPrefab != null)
         {
+            // Instanciation du prefab à la position sp.position avec la rotation actuelle
             GameObject projectile = Instantiate(createPrefab, sp.position, transform.rotation);
+
+            // Si l'objet possède le composant SaveableObject, réassigner son ID
+            SaveableObject so = projectile.GetComponent<SaveableObject>();
+            if (so != null)
+            {
+                so.SetUniqueId(System.Guid.NewGuid().ToString());
+            }
+
             Rigidbody2D projRb = projectile.GetComponent<Rigidbody2D>();
-           
             if (projRb != null)
             {
                 projRb.AddForce(transform.right * createProjectileForce, ForceMode2D.Impulse);
@@ -138,8 +146,8 @@ public class rbsm : MonoBehaviour
             }
             Debug.Log("Projectile créé dans la direction " + transform.rotation.eulerAngles.z + "°");
         }
-        
     }
+
     private bool IsMouseOver()
     {
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

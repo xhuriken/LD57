@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 9029296747520884530}
   - component: {fileID: 576628382396288869}
   - component: {fileID: 21394071017519660}
+  - component: {fileID: 7312712779534751685}
   m_Layer: 9
   m_Name: Bumper
   m_TagString: Bumper
@@ -482,3 +483,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7312712779534751685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8065190857723303819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueId: 

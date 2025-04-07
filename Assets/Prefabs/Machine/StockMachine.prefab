@@ -4866,6 +4866,7 @@ GameObject:
   - component: {fileID: 8356268434021045649}
   - component: {fileID: 2884639187729042951}
   - component: {fileID: 2112321444177618843}
+  - component: {fileID: -1551214939372106690}
   m_Layer: 9
   m_Name: StockMachine
   m_TagString: Untagged
@@ -5284,3 +5285,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-1551214939372106690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9221366279253860388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueId: 

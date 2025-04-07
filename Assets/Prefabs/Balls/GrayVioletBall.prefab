@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 4798050930286366298}
   - component: {fileID: 2441187547069499161}
   - component: {fileID: 3423910492680812167}
+  - component: {fileID: 8481671510592335046}
   m_Layer: 0
   m_Name: GrayVioletBall
   m_TagString: Untagged
@@ -333,6 +334,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &8481671510592335046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5643749443440215637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueId: 
 --- !u!1001 &7088214864070843361
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 706488801408942272}
   - component: {fileID: 7804974842402948177}
   - component: {fileID: 7513953970546769623}
+  - component: {fileID: 6449762977700046595}
   m_Layer: 6
   m_Name: BlueBall
   m_TagString: Ball
@@ -220,7 +221,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duplicateCount: 3
   force: 4
-  isDragged: 0
   isClickable: 1
   as_duplicate: {fileID: 8300000, guid: 62efe3f80ec52df4ab54a4e0ad659bf9, type: 3}
   as_click: {fileID: 8300000, guid: 441a70337c31521438e4c2ccbd4d1bd7, type: 3}
@@ -378,6 +378,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zone: {fileID: 0}
+--- !u!114 &6449762977700046595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3504687067306247434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueId: 
 --- !u!1001 &1619725049041358579
 PrefabInstance:
   m_ObjectHideFlags: 0

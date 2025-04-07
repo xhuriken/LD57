@@ -30,6 +30,8 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
     public GameObject clickParticules;
     private AudioSource m_audioSource;
 
+    public bool isInMachine { get; set; } = false;
+
     // États de BlueBall
     public enum BlueBallState { Spawn, Idle, Click, Duplicate, Drag, Friction, Inhale, Crafting, CraftingMoving }
     public BlueBallState currentState = BlueBallState.Spawn;
@@ -374,11 +376,32 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
     {
         GameObject newObject = Instantiate(gameObject, transform.position, Quaternion.identity);
         newObject.name = gameObject.name;
-        Vector2 randomDir = Random.insideUnitCircle.normalized;
-        Debug.Log("[RedBall] SpawnProp random direction: " + randomDir);
-        newObject.GetComponent<Rigidbody2D>().AddForce(randomDir * force, ForceMode2D.Impulse);
+
+        // Marquer le duplicata comme non sauvegardé et lui attribuer un nouvel identifiant unique
+        SaveableObject so = newObject.GetComponent<SaveableObject>();
+        if (so != null)
+        {
+         
+            so.SetUniqueId(System.Guid.NewGuid().ToString());
+        }
+
+        Vector2 dir;
+        if (isInMachine)
+        {
+            dir = Vector2.down;
+            Debug.Log("[RedBall] SpawnProp direction: " + dir);
+        }
+        else
+        {
+            dir = Random.insideUnitCircle.normalized;
+            Debug.Log("[RedBall] SpawnProp random direction: " + dir);
+        }
+        newObject.GetComponent<Rigidbody2D>().AddForce(dir * force, ForceMode2D.Impulse);
         yield return null;
     }
+
+
+
 
     public string CraftBallType { get { return "BlueBall"; } }
     public Transform Transform { get { return transform; } }

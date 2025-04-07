@@ -137,11 +137,23 @@ public class FirstBall : MonoBehaviour
     {
         GameObject newObject = Instantiate(duplicateBall, transform.position, Quaternion.identity);
         newObject.name = "Ball";
+
+        // Ne pas modifier ShouldSave pour que la nouvelle boule soit sauvegardée
+        SaveableObject so = newObject.GetComponent<SaveableObject>();
+        if (so != null)
+        {
+            // Optionnel : si vous voulez attribuer un nouvel identifiant unique pour éviter les doublons
+            so.SetUniqueId(System.Guid.NewGuid().ToString());
+        }
+
         Vector2 randomDir = Random.insideUnitCircle.normalized;
         Debug.Log("SpawnProp random direction: " + randomDir);
         newObject.GetComponent<Rigidbody2D>().AddForce(randomDir * force, ForceMode2D.Impulse);
         yield return null;
     }
+
+
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
