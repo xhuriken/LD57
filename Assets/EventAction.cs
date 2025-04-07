@@ -5,7 +5,7 @@ using UnityEngine;
 public class EventAction : MonoBehaviour
 {
     public GameObject GrayVioletBall;
-    public void GrayVoioletBall()
+    public void GrayVoiletBall()
     {
         Instantiate(GrayVioletBall, transform.position, Quaternion.identity);
     }
