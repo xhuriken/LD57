@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 706488801408942272}
   - component: {fileID: 7804974842402948177}
   - component: {fileID: 7513953970546769623}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: BlueBall
   m_TagString: Ball
   m_Icon: {fileID: 0}
@@ -220,7 +220,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duplicateCount: 3
   force: 4
-  isDragged: 0
   isClickable: 1
   as_duplicate: {fileID: 8300000, guid: 62efe3f80ec52df4ab54a4e0ad659bf9, type: 3}
   as_click: {fileID: 8300000, guid: 441a70337c31521438e4c2ccbd4d1bd7, type: 3}
@@ -433,6 +432,10 @@ PrefabInstance:
     - target: {fileID: 7472276264817055916, guid: 8644660aadb79504395fa3f5016e902c, type: 3}
       propertyPath: m_Name
       value: IndicationSelector
+      objectReference: {fileID: 0}
+    - target: {fileID: 7472276264817055916, guid: 8644660aadb79504395fa3f5016e902c, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7472276264817055916, guid: 8644660aadb79504395fa3f5016e902c, type: 3}
       propertyPath: m_IsActive

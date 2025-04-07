@@ -13,9 +13,8 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
     private Rigidbody2D m_rb;
     private CircleCollider2D m_cc;
     private Vector3 dragOffset;
+    private Data m_data;
 
-    [Header("Utils")]
-    public bool isDragged = false;
 
     [Header("Particules/SFX")]
     public AudioClip as_duplicate;
@@ -24,7 +23,9 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
     public GameObject clickParticules;
     private AudioSource m_audioSource;
 
-    private enum GrayBallState { Idle, Drag, Inhale, Craft, Crafting }
+
+    public bool isBumped = false;
+    private enum GrayBallState { Idle, Drag, Inhale, Craft, Crafting, }
     private GrayBallState currentState = GrayBallState.Idle;
 
     [Header("Idle Movement")]
@@ -37,7 +38,12 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
     public GameObject selectionIndicator;
     public GameObject SpaceCraftHelp;
     public string CraftBallType { get { return "GrayVioletBall"; } }
+    private Collider2D mainCollider;
 
+    private void Awake()
+    {
+        mainCollider = GetComponent<Collider2D>();
+    }
     void Start()
     {
         SpaceCraftHelp = GameObject.FindGameObjectWithTag("TextHelpCraft");
@@ -50,7 +56,7 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
         m_cc = GetComponent<CircleCollider2D>();
         m_audioSource = GetComponent<AudioSource>();
         m_rb = GetComponent<Rigidbody2D>();
-
+        m_data = GetComponent<Data>();  
         GameObject zoneObject = GameObject.Find("Zone");
         if (zoneObject != null)
         {
@@ -130,12 +136,25 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
                 {
                     currentState = (GameManager.Instance.CraftMode ? GrayBallState.Craft : (m_rb.isKinematic ? GrayBallState.Inhale : GrayBallState.Idle));
                     GameManager.Instance.isDragging = false;
-                    isDragged = false;
+                    m_data.isDragged = false;
                 }
                 break;
             case GrayBallState.Inhale:
-                m_rb.velocity = Vector2.zero;
-                m_rb.isKinematic = true;
+                if (isBumped)
+                {
+                    m_rb.isKinematic = false;
+                    m_rb.velocity *= 0.99f;
+                    if (m_rb.velocity.magnitude < 0.01f)
+                    {
+                        m_rb.velocity = Vector2.zero;
+                        isBumped = false;
+                    }
+                }
+                else
+                {
+                    m_rb.isKinematic = true;
+                    m_rb.velocity = Vector2.zero;
+                }
                 if (pointEffector != null)
                 {
                     var effector = pointEffector.GetComponent<PointEffector2D>();
@@ -163,7 +182,7 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
                     m_rb.velocity = Vector2.zero;
                     GameManager.Instance.isDragging = true;
                     currentState = GrayBallState.Drag;
-                    isDragged = true;
+                    m_data.isDragged = true;
                 }
                 
                 break;
@@ -199,7 +218,7 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
                 dragOffset = transform.position - (Vector3)mouseWorldPos;
                 m_rb.velocity = Vector2.zero;
                 GameManager.Instance.isDragging = true;
-                isDragged = true;
+                m_data.isDragged = true;
                 currentState = GrayBallState.Drag;
             }
         }
@@ -308,6 +327,21 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
             m_rb.isKinematic = true;
             Debug.Log("[GrayVioletBall] Transition to Inhale");
         }
+        //if (collision.collider.CompareTag("Bumper"))
+        //{
+        //    if (m_data.isDragged)
+        //    {
+        //        m_data.isDragged = false;
+        //        GameManager.Instance.isDragging = false;
+        //        isBumped = true;
+        //    }
+        //}
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+
+
     }
 
     public Transform Transform { get { return transform; } }

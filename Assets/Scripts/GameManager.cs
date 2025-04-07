@@ -59,6 +59,11 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public void UpdateTextNumber()
+    {
+        numberText.text = globalNumber.ToString();
+    }
+
     private void Start()
     {
         camControl = Camera.main.GetComponent<CameraController>();
@@ -87,7 +92,16 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if(!NeverCraft)
+        if (menuShown)
+        {
+            if (CraftMode)
+            {
+                Debug.Log("[GameManager] CraftMode is active but menu is shown. Cancelling CraftMode.");
+                CancelCraftMode();
+            }
+        }
+
+        if (!NeverCraft)
             return;
 
         if (CraftMode || isInTransition) UpdateCraftLine();

@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 6760204286343464869}
   - component: {fileID: 6240315418340677334}
   - component: {fileID: 6903084087599600355}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: FirstBall
   m_TagString: Ball
   m_Icon: {fileID: 0}
@@ -368,7 +368,7 @@ GameObject:
   - component: {fileID: 4372597468810429300}
   - component: {fileID: 3450724029403206563}
   - component: {fileID: 2174350322982749387}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: Dot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -547,6 +547,10 @@ PrefabInstance:
     - target: {fileID: 7472276264817055916, guid: 8644660aadb79504395fa3f5016e902c, type: 3}
       propertyPath: m_Name
       value: IndicationSelector
+      objectReference: {fileID: 0}
+    - target: {fileID: 7472276264817055916, guid: 8644660aadb79504395fa3f5016e902c, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7472276264817055916, guid: 8644660aadb79504395fa3f5016e902c, type: 3}
       propertyPath: m_IsActive
