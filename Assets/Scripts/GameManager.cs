@@ -279,6 +279,10 @@ public class GameManager : MonoBehaviour
 
         foreach (CraftRecipe recipe in craftRecipes)
         {
+            // Check if the recipe has already been crafted and if it should only be crafted once
+            if (recipe.CraftOnce && recipe.hasBeenCrafted)
+                continue;
+
             if (Matches(recipe, composition))
             {
                 Debug.Log("[GameManager] Matching recipe found: " + recipe.recipeName);
@@ -290,6 +294,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("   " + kvp.Key + " : " + kvp.Value);
         return null;
     }
+
 
     private bool Matches(CraftRecipe recipe, Dictionary<string, int> composition)
     {
@@ -419,7 +424,11 @@ public class GameManager : MonoBehaviour
                 Destroy(mb.gameObject);
             }
         }
-
+        if (matchingRecipe.CraftOnce)
+        {
+            matchingRecipe.hasBeenCrafted = true;
+            Debug.Log("[GameManager] Recipe " + matchingRecipe.recipeName + " marked as crafted (CraftOnce).");
+        }
         selectedBalls.Clear();
         CraftMode = false;
         Cursor.SetCursor(defaultCursor, Vector2.zero, CursorMode.Auto);

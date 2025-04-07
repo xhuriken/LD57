@@ -3225,6 +3225,8 @@ MonoBehaviour:
       count: 3
     previewPrefab: {fileID: 3067657974841017866, guid: 4a64a0924583725439134020637bb2b8, type: 3}
     finalPrefab: {fileID: 8065190857723303819, guid: 50033b8f81cde5a47a1cf98331910241, type: 3}
+    CraftOnce: 0
+    hasBeenCrafted: 0
   - recipeName: SpawnRedBall
     requirements:
     - ballType: RedBall
@@ -3233,6 +3235,8 @@ MonoBehaviour:
       count: 2
     previewPrefab: {fileID: 7400269335471674966, guid: dad0965872116564c8945c46eeb99a7f, type: 3}
     finalPrefab: {fileID: 7400269335471674966, guid: ca4e56138f4c6ce44a8b38e76048d350, type: 3}
+    CraftOnce: 0
+    hasBeenCrafted: 0
   - recipeName: StockMachine
     requirements:
     - ballType: GrayVioletBall
@@ -3241,12 +3245,16 @@ MonoBehaviour:
       count: 3
     previewPrefab: {fileID: 9221366279253860388, guid: c9c598e5386832142a99247b5a04b01b, type: 3}
     finalPrefab: {fileID: 9221366279253860388, guid: eb1637c822554ce4ebb5f266fe043cd5, type: 3}
+    CraftOnce: 0
+    hasBeenCrafted: 0
   - recipeName: Shop
     requirements:
     - ballType: RedBall
       count: 10
-    previewPrefab: {fileID: 9221366279253860388, guid: c9c598e5386832142a99247b5a04b01b, type: 3}
+    previewPrefab: {fileID: 6398136477132450388, guid: e25394b5e2092d54db86606ba20c07d4, type: 3}
     finalPrefab: {fileID: 6398136477132450388, guid: 3609deb5ca3d2e64e84306b733acb56d, type: 3}
+    CraftOnce: 1
+    hasBeenCrafted: 0
   craftCursor: {fileID: 2800000, guid: 526ab00963574294cb322b0576988457, type: 3}
   craftCursorHotspot: {x: 35, y: 35}
   defaultCursor: {fileID: 0}

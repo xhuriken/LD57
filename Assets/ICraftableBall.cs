@@ -24,5 +24,7 @@ public class CraftRecipe
     public string recipeName;
     public List<BallRequirement> requirements; 
     public GameObject previewPrefab;           
-    public GameObject finalPrefab;             
+    public GameObject finalPrefab;
+    public bool CraftOnce;
+    public bool hasBeenCrafted = false;
 }
