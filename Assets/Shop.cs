@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Shapes;
-using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
+
 public class Shop : MonoBehaviour
 {
     [Header("Références")]
@@ -13,6 +11,8 @@ public class Shop : MonoBehaviour
     public ParticleSystem particle2;
     public GameObject ballShopContainer;
     public Disc discComponent;
+    private Rigidbody2D m_rb;
+    private AudioSource m_audioSource;
 
     [Header("Paramètres")]
     public float spawnDelay = 0.1f;
@@ -21,21 +21,30 @@ public class Shop : MonoBehaviour
     public float moveDuration = 0.5f;
     public float radius = 1.5f;
     public float shopDetectionRadius = 0.8f;
+    public float expelMultiplier = 2f;
 
     [Header("Disc Color Cycling")]
     public Color[] discColors;
     public float colorTransitionDuration = 2f;
 
-    public float expelMultiplier = 2f; 
+    [Header("Drag & Repulse Settings")]
+    public AudioClip as_cantplace;
+    public float bumpForce = 5f;
 
+    private float lastSoundTime = -Mathf.Infinity;
     private bool isShopActive = false;
-    private bool isAnimating = false; 
+    private bool isAnimating = false;
+    private bool isDragged = false;
+    private Vector3 dragOffset;
+
     private List<BallShop> ballShops = new List<BallShop>();
-    private Color[] correctedDiscColors;
     private Color discCurrentColor;
+
     void Start()
     {
         discCurrentColor = discComponent.Color;
+        m_rb = GetComponent<Rigidbody2D>();
+        m_audioSource = GetComponent<AudioSource>();
 
         foreach (Transform child in ballShopContainer.transform)
         {
@@ -53,10 +62,121 @@ public class Shop : MonoBehaviour
         }
         else
         {
-            Debug.Log("zob");
+            Debug.Log("[Shop] No disc colors assigned!");
         }
     }
 
+    void Update()
+    {
+        if (discComponent != null)
+            discComponent.Color = discCurrentColor;
+
+        HandleDrag();
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (!isAnimating && IsMouseOverShop())
+            {
+                if (!isShopActive)
+                {
+                    Debug.Log("[Shop] Activation du shop.");
+                    ActivateShop();
+                }
+                else
+                {
+                    Debug.Log("[Shop] Fermeture du shop (clic sur le shop).");
+                    HideShop();
+                }
+            }
+        }
+    }
+
+    private void HandleDrag()
+    {
+        if (isShopActive || isAnimating)
+            return;
+
+        if (Input.GetMouseButtonDown(1) && IsMouseOverShop())
+        {
+            dragOffset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            isDragged = true;
+        }
+
+        if (isDragged && Input.GetMouseButton(1))
+        {
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            transform.position = mouseWorldPos + dragOffset;
+            m_rb.velocity = Vector2.zero;
+        }
+
+        if (isDragged && Input.GetMouseButtonUp(1))
+        {
+            isDragged = false;
+            CheckLayerCollisionAndRepulse();
+        }
+    }
+
+    private bool IsMouseOverShop()
+    {
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        float distance = Vector2.Distance(mousePos, transform.position);
+        return distance <= shopDetectionRadius;
+    }
+
+    private void CheckLayerCollisionAndRepulse()
+    {
+        Collider2D col = GetComponent<Collider2D>();
+        if (col == null)
+            return;
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, col.bounds.extents.x);
+
+        foreach (Collider2D hit in hits)
+        {
+            if (hit.gameObject != gameObject && hit.gameObject.layer == LayerMask.NameToLayer("Objects"))
+            {
+                Debug.Log("[Shop] Repulse with: " + hit.gameObject.name);
+                RepulseDraggedWith(hit.gameObject);
+                break;
+            }
+        }
+    }
+
+    private void RepulseDraggedWith(GameObject other)
+    {
+        bool thisWasKinematic = m_rb.isKinematic;
+        if (m_rb.isKinematic)
+        {
+            m_rb.isKinematic = false;
+            Debug.Log("[Shop] Rigidbody set to dynamic for repulsion");
+        }
+
+        Vector2 repulseDirection = (transform.position - other.transform.position).normalized;
+        m_rb.AddForce(repulseDirection * bumpForce, ForceMode2D.Impulse);
+
+        if (Time.time - lastSoundTime >= 2f)
+        {
+            if (as_cantplace != null)
+            {
+                m_audioSource.PlayOneShot(as_cantplace, 0.7f);
+                Debug.Log("[Shop] Sound cantplace joué");
+            }
+            lastSoundTime = Time.time;
+        }
+
+        StartCoroutine(ResetKinematicState(m_rb, thisWasKinematic));
+    }
+
+    private IEnumerator ResetKinematicState(Rigidbody2D rb, bool originalState)
+    {
+        yield return new WaitForSeconds(0.15f);
+        rb.velocity = Vector2.zero;
+        rb.isKinematic = originalState;
+
+        Debug.Log("[Shop] Reset Rigidbody to Kinematic: " + originalState);
+
+        CheckLayerCollisionAndRepulse();
+    }
 
     IEnumerator CycleDiscColors()
     {
@@ -80,40 +200,6 @@ public class Shop : MonoBehaviour
             index = (index + 1) % discColors.Length;
         }
     }
-
-
-
-
-    private bool IsMouseOverShop()
-    {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        float distance = Vector2.Distance(mousePos, transform.position);
-        return distance <= shopDetectionRadius;
-    }
-
-    void Update()
-    {
-        if (discComponent != null)
-            discComponent.Color = discCurrentColor;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (!isAnimating && IsMouseOverShop())
-            {
-                if (!isShopActive)
-                {
-                    Debug.Log("[Shop] Activation du shop.");
-                    ActivateShop();
-                }
-                else
-                {
-                    Debug.Log("[Shop] Fermeture du shop (clic sur le shop).");
-                    HideShop();
-                }
-            }
-        }
-    }
-
 
     void ActivateShop()
     {

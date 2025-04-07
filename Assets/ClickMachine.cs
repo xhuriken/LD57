@@ -91,23 +91,76 @@ public class ClickerMachine : MonoBehaviour
                         break;
                     }
                 }
+                CheckBallIntruders();
+
                 break;
 
             case MachineState.Click:
             case MachineState.Exit:
+                CheckBallIntruders();
+
                 break;
         }
     }
 
+    private void CheckBallIntruders()
+    {
+        Vector2 center = transform.position;
+        Vector2 leftPoint = center + Vector2.left * detectionRadius;
+        Vector2 rightPoint = center + Vector2.right * detectionRadius;
+
+        Rect leftRect = new Rect(leftPoint.x - detectionRectWidth / 2, leftPoint.y - detectionRectHeight / 2, detectionRectWidth, detectionRectHeight);
+        Rect rightRect = new Rect(rightPoint.x - detectionRectWidth / 2, rightPoint.y - detectionRectHeight / 2, detectionRectWidth, detectionRectHeight);
+
+        GameObject[] balls = GameObject.FindGameObjectsWithTag("Ball");
+
+        foreach (GameObject ball in balls)
+        {
+            IClickMachine clickMachine = ball.GetComponent<IClickMachine>();
+            if (clickMachine != null && clickMachine.isInMachine)
+                continue; 
+
+            Vector2 ballPos = ball.transform.position;
+            if (leftRect.Contains(ballPos) || rightRect.Contains(ballPos))
+            {
+                Debug.Log("[ClickerMachine] Balle intruse détectée: " + ball.name);
+
+                Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    Vector2 sideDirection = (ball.transform.position.x < transform.position.x) ? Vector2.left : Vector2.right;
+                    rb.AddForce(sideDirection * bumpForce, ForceMode2D.Impulse);
+                }
+            }
+        }
+    }
+
+
     private bool IsMouseOverMachine()
     {
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Collider2D col = GetComponent<Collider2D>();
-        return (col != null && col.OverlapPoint(mousePos));
+        Vector2 center = transform.position;
+
+        float height = 1.5f * 2f; 
+        float width = height * (2f / 3f); 
+
+        Rect rect = new Rect(
+            center.x - width / 2f,
+            center.y - height / 2f,
+            width,
+            height
+        );
+
+        return rect.Contains(mousePos);
     }
 
     private IEnumerator SlideAndClick(GameObject ball)
     {
+        if (ball.GetComponent<Data>().isDragged)
+        {
+            ball.GetComponent<Data>().isDragged = false;
+            GameManager.Instance.isDragging = false;
+        }
         IClickMachine clickMachine = ball.GetComponent<IClickMachine>();
         if (clickMachine != null)
             clickMachine.isInMachine = true;
@@ -174,10 +227,19 @@ public class ClickerMachine : MonoBehaviour
         yield return new WaitForSeconds(exitDelay);
 
         currentState = MachineState.WaitBall;
-        if (ball.GetComponent<IClickMachine>() != null)
-            ball.GetComponent<IClickMachine>().isInMachine = false;
+        IClickMachine clickMachine = ball.GetComponent<IClickMachine>();
+        if (clickMachine != null)
+            clickMachine.isInMachine = false;
+        //StartCoroutine(resetIsInMachine(ball));
     }
 
+    //IEnumerator resetIsInMachine(GameObject ball)
+    //{
+    //    yield return new WaitForSeconds(0.5f);
+    //    IClickMachine clickMachine = ball.GetComponent<IClickMachine>();
+    //    if (clickMachine != null)
+    //        clickMachine.isInMachine = false;
+    //}
     private void CheckLayerCollisionAndRepulse()
     {
         Vector2 center = transform.position;
@@ -188,7 +250,13 @@ public class ClickerMachine : MonoBehaviour
 
         foreach (Collider2D hit in hits)
         {
-            if (hit.gameObject != gameObject && hit.gameObject.layer == LayerMask.NameToLayer("Objects"))
+            if (hit.gameObject == gameObject)
+                continue;
+
+            if (hit.transform.IsChildOf(this.transform))
+                continue;
+
+            if (hit.gameObject.layer == LayerMask.NameToLayer("Objects"))
             {
                 Debug.Log("[ClickerMachine] Repulse with: " + hit.gameObject.name);
                 RepulseDraggedWith(hit.gameObject);

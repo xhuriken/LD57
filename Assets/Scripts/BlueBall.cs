@@ -93,7 +93,14 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber, ISaveData, IClic
         {
             m_rb.isKinematic = false;
         }
-
+        if (isInMachine && m_cc.enabled)
+        {
+            m_cc.enabled = false;
+        }
+        else if (!isInMachine && !m_cc.enabled)
+        {
+            m_cc.enabled = true;
+        }
         if (Input.GetMouseButtonDown(1) && IsMouseOver() && currentState == BlueBallState.Friction)
         {
             dragOffset = transform.position - (Vector3)Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -220,6 +227,10 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber, ISaveData, IClic
     {
         if (HasCraftModeCollider() && !(GameManager.Instance.selectedBalls.Count > 0 && GameManager.Instance.selectedBalls[0] == this))
             return;
+        if (isInMachine)
+        {
+            return;
+        }
         if (!isClickable) return;
         if (GameManager.Instance.menuShown) return;
 

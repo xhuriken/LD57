@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1336339998405305819}
   - component: {fileID: 6385444510708165141}
   - component: {fileID: 4534971501004236918}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4863,7 +4863,7 @@ GameObject:
   - component: {fileID: 4281598153271309516}
   - component: {fileID: 2997442956951380943}
   - component: {fileID: 1894224932948977179}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5575,7 +5575,7 @@ GameObject:
   - component: {fileID: 629184481210670982}
   - component: {fileID: 8015901213649655434}
   - component: {fileID: 6387165201080507477}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Pink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5789,7 +5789,7 @@ GameObject:
   - component: {fileID: 6437640108391493778}
   - component: {fileID: 1136744754629541925}
   - component: {fileID: 176186083969204083}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Orange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6252,7 +6252,7 @@ GameObject:
   - component: {fileID: 4534470694397871426}
   - component: {fileID: 908782883941510621}
   - component: {fileID: 2062450837448581599}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: DarkBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6462,7 +6462,7 @@ GameObject:
   - component: {fileID: 6174802641010356113}
   - component: {fileID: 6685221121581622420}
   - component: {fileID: 7733656111474008542}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Particle System (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11314,7 +11314,7 @@ GameObject:
   - component: {fileID: 3105835841208890707}
   - component: {fileID: 1821586316221417783}
   - component: {fileID: 26731900216447472}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11777,7 +11777,7 @@ GameObject:
   - component: {fileID: 4243547472664598169}
   - component: {fileID: 8498876915537487684}
   - component: {fileID: 1026994070947711013}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Yellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11991,7 +11991,7 @@ GameObject:
   - component: {fileID: 524490574154881924}
   - component: {fileID: 4536021353495616324}
   - component: {fileID: 6998745290737461401}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Violet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12199,7 +12199,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7715260171487244690}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ShopOverlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12244,7 +12244,7 @@ GameObject:
   - component: {fileID: 7530776994968710726}
   - component: {fileID: 6028848573138694598}
   - component: {fileID: 4286551980038374503}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Green
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12768,7 +12768,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!82 &7224058629851138565
 AudioSource:
   m_ObjectHideFlags: 0
@@ -12887,6 +12887,7 @@ MonoBehaviour:
   moveDuration: 0.5
   radius: 1.5
   shopDetectionRadius: 0.8
+  expelMultiplier: 2
   discColors:
   - {r: 0, g: 0.7735849, b: 0.052567683, a: 1}
   - {r: 0.754717, g: 0.6972606, b: 0, a: 1}
@@ -12895,7 +12896,8 @@ MonoBehaviour:
   - {r: 0.7830189, g: 0, b: 0, a: 1}
   - {r: 0.5861731, g: 0, b: 0.78431374, a: 1}
   colorTransitionDuration: 2
-  expelMultiplier: 2
+  as_cantplace: {fileID: 8300000, guid: 0b8d3d83527f5bb4eb39c91062d744f9, type: 3}
+  bumpForce: 5
 --- !u!58 &4585922656318358216
 CircleCollider2D:
   m_ObjectHideFlags: 0

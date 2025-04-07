@@ -79,6 +79,15 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber , ISaveData, IClic
         }
 
 
+        if (isInMachine && m_cc.enabled)
+        {
+            m_cc.enabled = false;
+        }
+        else if (!isInMachine && !m_cc.enabled)
+        {
+            m_cc.enabled = true;
+        }
+
         switch (currentState)
         {
             case RedBallState.Spawn:
@@ -153,6 +162,10 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber , ISaveData, IClic
     private void ClickEvent()
     {
         if (HasCraftModeCollider() && !(GameManager.Instance.selectedBalls.Count > 0 && GameManager.Instance.selectedBalls[0] == this))
+        {
+            return;
+        }
+        if(isInMachine)
         {
             return;
         }
