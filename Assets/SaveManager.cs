@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -14,7 +14,6 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
-        // Charge la sauvegarde au démarrage si elle existe
         if (File.Exists(filePath))
         {
             LoadScene();
@@ -23,7 +22,6 @@ public class SaveManager : MonoBehaviour
 
     private void Update()
     {
-        // Pour tester la sauvegarde et le chargement via S et L
         if (Input.GetKeyDown(KeyCode.S))
         {
             SaveScene();
@@ -39,11 +37,9 @@ public class SaveManager : MonoBehaviour
         SceneData sceneData = new SceneData();
         sceneData.playerPoints = GameManager.Instance.globalNumber;
 
-        // Récupérer tous les SaveableObject présents dans la scène
         SaveableObject[] saveableObjects = GameObject.FindObjectsOfType<SaveableObject>();
         foreach (SaveableObject so in saveableObjects)
         {
-            // Ne sauvegarder que ceux marqués comme devant être sauvegardés
             if (!so.ShouldSave)
                 continue;
 
@@ -53,19 +49,30 @@ public class SaveManager : MonoBehaviour
             data.rotation = so.transform.rotation;
             data.scale = so.transform.localScale;
             data.prefabPath = so.PrefabPath;
+
+            ISaveData saveData = so.GetComponent<ISaveData>();
+            if (saveData != null)
+            {
+                data.clickCount = saveData.ClickCount;
+            }
+            else
+            {
+                data.clickCount = 0;
+            }
+
             sceneData.transforms.Add(data);
         }
 
         string json = JsonUtility.ToJson(sceneData, true);
         File.WriteAllText(filePath, json);
-        Debug.Log("Scène sauvegardée !");
+        Debug.Log("ScÃ¨ne sauvegardÃ©e !");
     }
 
     public void LoadScene()
     {
         if (!File.Exists(filePath))
         {
-            Debug.Log("Aucune sauvegarde trouvée.");
+            Debug.Log("Aucune sauvegarde trouvÃ©e.");
             return;
         }
 
@@ -93,10 +100,16 @@ public class SaveManager : MonoBehaviour
                 so.transform.position = data.position;
                 so.transform.rotation = data.rotation;
                 so.transform.localScale = data.scale;
+
+                ISaveData saveData = so.GetComponent<ISaveData>();
+                if (saveData != null)
+                {
+                    saveData.ClickCount = data.clickCount;
+                }
             }
             else
             {
-                Debug.LogWarning("Objet non trouvé pour l'id : " + data.id + ". Instanciation du prefab.");
+                Debug.LogWarning("Objet non trouvÃ© pour l'id : " + data.id + ". Instanciation du prefab.");
                 if (!string.IsNullOrEmpty(data.prefabPath))
                 {
                     GameObject prefab = Resources.Load<GameObject>(data.prefabPath);
@@ -109,24 +122,28 @@ public class SaveManager : MonoBehaviour
                         {
                             newSO.SetUniqueId(data.id);
                         }
+                        ISaveData newSaveData = newObj.GetComponent<ISaveData>();
+                        if (newSaveData != null)
+                        {
+                            newSaveData.ClickCount = data.clickCount;
+                        }
                     }
                     else
                     {
-                        Debug.LogWarning("Prefab non trouvé dans Resources pour le chemin : " + data.prefabPath);
+                        Debug.LogWarning("Prefab non trouvÃ© dans Resources pour le chemin : " + data.prefabPath);
                     }
                 }
             }
         }
 
-        // Détruire les objets présents qui n'étaient pas sauvegardés
         foreach (KeyValuePair<string, SaveableObject> kvp in saveableDict)
         {
             if (!savedIds.Contains(kvp.Key))
             {
-                Debug.Log("Destruction de l'objet non sauvegardé : " + kvp.Value.gameObject.name);
+                Debug.Log("Destruction de l'objet non sauvegardÃ© : " + kvp.Value.gameObject.name);
                 Destroy(kvp.Value.gameObject);
             }
         }
-        Debug.Log("Scène chargée !");
+        Debug.Log("ScÃ¨ne chargÃ©e !");
     }
 }

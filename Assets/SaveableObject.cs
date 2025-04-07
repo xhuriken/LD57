@@ -7,8 +7,8 @@ using UnityEditor;
 public class SaveableObject : MonoBehaviour
 {
     [SerializeField] private string uniqueId;
-    [SerializeField] private string prefabPath; // Chemin relatif dans Resources pour recréer l'objet
-    [SerializeField] private bool shouldSave = true; // Détermine si cet objet doit être sauvegardé
+    [SerializeField] private string prefabPath;
+    [SerializeField] private bool shouldSave = true; 
 
     public string UniqueId => uniqueId;
     public string PrefabPath => prefabPath;
@@ -17,16 +17,13 @@ public class SaveableObject : MonoBehaviour
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        // Génère un ID unique si le champ est vide (en mode édition)
         if (string.IsNullOrEmpty(uniqueId))
         {
             uniqueId = System.Guid.NewGuid().ToString();
             EditorUtility.SetDirty(this);
         }
-        // Si le chemin de prefab n'est pas défini, on peut le définir ici par défaut.
         if (string.IsNullOrEmpty(prefabPath))
         {
-            // On suppose que le nom de l'objet correspond au nom du prefab dans Resources.
             prefabPath = gameObject.name;
             EditorUtility.SetDirty(this);
         }
@@ -41,7 +38,6 @@ public class SaveableObject : MonoBehaviour
         }
     }
 
-    // Permet d'attribuer un ID lors de l'instanciation d'un objet manquant
     public void SetUniqueId(string id)
     {
         uniqueId = id;

@@ -171,3 +171,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueId: da12cf99-befd-47a8-8faa-7f38b85d40eb
+  prefabPath: Zone
+  shouldSave: 1

@@ -495,4 +495,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueId: 
+  uniqueId: c15462d1-3895-4760-b767-ae362a1c89b8
+  prefabPath: Bumper
+  shouldSave: 1

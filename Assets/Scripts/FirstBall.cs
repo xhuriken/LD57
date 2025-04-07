@@ -5,24 +5,28 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static RedBall;
 
-public class FirstBall : MonoBehaviour
+public class FirstBall : MonoBehaviour , ISaveData
 {
     [Header("Properties")]
     [SerializeField] private int duplicateCount = 3;
     [SerializeField] private GameObject duplicateBall;
     public float force = 2f;
-    private int clickCount = 0;
+    private int clickCount = 0;  
 
-    // Composants
+    public int ClickCount
+    {
+        get { return clickCount; }
+        set { clickCount = value; }
+    }
+
     private Animator m_animator;
     private Rigidbody2D m_rb;
     private CircleCollider2D m_cc;
     private Vector3 dragOffset;
 
-    // Booléens pour le suivi de l'état de la souris et cliquabilité
     private bool isDragged = false;
     [Header("Utils")]
-    public bool isClickable = true;  // Flag similaire à RedBall
+    public bool isClickable = true;  
 
     [Header("Particules/SFX")]
     public AudioClip as_duplicate;
@@ -31,7 +35,6 @@ public class FirstBall : MonoBehaviour
     public GameObject clickParticules;
     private AudioSource m_audioSource;
 
-    // Machine à états
     private enum FirstBallState { Idle, Click, Duplicate, Drag }
     private FirstBallState currentState = FirstBallState.Idle;
 
@@ -71,7 +74,6 @@ public class FirstBall : MonoBehaviour
                         Instantiate(clickParticules, transform.position, Quaternion.identity);
                     }
                 }
-                // Clic droit pour drag si la souris est sur l'objet
                 if (Input.GetMouseButtonDown(1) && IsMouseOver())
                 {
                     Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -138,11 +140,9 @@ public class FirstBall : MonoBehaviour
         GameObject newObject = Instantiate(duplicateBall, transform.position, Quaternion.identity);
         newObject.name = "Ball";
 
-        // Ne pas modifier ShouldSave pour que la nouvelle boule soit sauvegardée
         SaveableObject so = newObject.GetComponent<SaveableObject>();
         if (so != null)
         {
-            // Optionnel : si vous voulez attribuer un nouvel identifiant unique pour éviter les doublons
             so.SetUniqueId(System.Guid.NewGuid().ToString());
         }
 

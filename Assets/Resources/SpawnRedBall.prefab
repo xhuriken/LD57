@@ -1132,7 +1132,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueId: 
+  uniqueId: ba4eedfc-adaa-4c13-97ec-35663fc96b8b
+  prefabPath: SpawnRedBall
+  shouldSave: 1
 --- !u!1 &7953135758243750718
 GameObject:
   m_ObjectHideFlags: 0

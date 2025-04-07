@@ -4,16 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static RedBall;
+using static RedBall; 
 
-public class BlueBall : MonoBehaviour, ICraftableBall, INumber
+public class BlueBall : MonoBehaviour, ICraftableBall, INumber, ISaveData, IClickMachine
 {
     [Header("Properties")]
     [SerializeField] private int duplicateCount = 3;
     public float force = 2f;
-    private int clickCount = 0;
+    private int clickCount = 0; 
 
-    // Composants
+    public int ClickCount
+    {
+        get { return clickCount; }
+        set { clickCount = value; }
+    }
+
     private Animator m_animator;
     private Rigidbody2D m_rb;
     private CircleCollider2D m_cc;
@@ -31,8 +36,6 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
     private AudioSource m_audioSource;
 
     public bool isInMachine { get; set; } = false;
-
-    // États de BlueBall
     public enum BlueBallState { Spawn, Idle, Click, Duplicate, Drag, Friction, Inhale, Crafting, CraftingMoving }
     public BlueBallState currentState = BlueBallState.Spawn;
 
@@ -44,14 +47,15 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
     public float frictionFactor = 0.99f;
     public float frictionThreshold = 0.01f;
 
-    // Variables d'oscillation
     private float originY;
     private float topY;
     private float bottomY;
     private int direction = 1;
 
+    [Header("Crafting & Selection")]
     public GameObject selectionIndicator;
-    void Start()
+
+    private void Start()
     {
         m_animator = GetComponent<Animator>();
         m_cc = GetComponent<CircleCollider2D>();
@@ -76,7 +80,6 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
             yield return new WaitForSeconds(1f);
             currentState = BlueBallState.Idle;
             m_rb.velocity = new Vector2(0, oscillationSpeed * direction);
-
         }
     }
 
@@ -89,11 +92,8 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
         else if (!HasCraftModeCollider() && m_rb.isKinematic)
         {
             m_rb.isKinematic = false;
-
         }
 
-        //En frixion le drag marchais pas une fois sur deux, je devenais fou, alors j'ai mis ça
-        //Ce code ecrase tout les state, si jamais il est en frixion et qu'on veux drag, ON DRAG, pas juste 'on drag' gnagnagna
         if (Input.GetMouseButtonDown(1) && IsMouseOver() && currentState == BlueBallState.Friction)
         {
             dragOffset = transform.position - (Vector3)Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -109,11 +109,10 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
             case BlueBallState.Spawn:
                 ClickEvent();
                 break;
-            case BlueBallState.Idle:
 
+            case BlueBallState.Idle:
                 if (m_data != null && m_data.isInhaled)
                 {
-                    
                     currentState = BlueBallState.Inhale;
                     m_animator.SetTrigger("Inhale");
                     m_rb.velocity = Vector2.zero;
@@ -136,16 +135,17 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                 if (isClickable)
                     ClickEvent();
                 break;
+
             case BlueBallState.Click:
                 currentState = BlueBallState.Idle;
                 break;
+
             case BlueBallState.Duplicate:
                 m_rb.velocity = Vector2.zero;
                 if (!m_data.isFreeze)
-                {
                     currentState = BlueBallState.Idle;
-                }
                 break;
+
             case BlueBallState.Drag:
                 if (Input.GetMouseButton(1))
                 {
@@ -153,7 +153,6 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                     transform.position = mouseWorldPos + (Vector2)dragOffset;
                     m_rb.velocity = Vector2.zero;
 
-                    //Verify if the ball is Outside the craft area, if so, deselect it
                     if (GameManager.Instance.CraftMode && GameManager.Instance.currentCraftModeCollider != null)
                     {
                         float dist = Vector2.Distance(GameManager.Instance.currentCraftModeCollider.transform.position, transform.position);
@@ -164,7 +163,6 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                             if (selectionIndicator != null)
                                 selectionIndicator.SetActive(false);
                             GameManager.Instance.UnregisterSelectedBall(this);
-
                         }
                     }
                 }
@@ -178,6 +176,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                     bottomY = originY - amplitude;
                 }
                 break;
+
             case BlueBallState.Friction:
                 if (m_data.isDragged)
                 {
@@ -198,39 +197,37 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                 }
                 break;
 
-
             case BlueBallState.Inhale:
                 m_rb.velocity = Vector2.zero;
                 break;
+
             case BlueBallState.Crafting:
                 ClickEvent();
                 m_rb.velocity = Vector2.zero;
                 break;
+
             case BlueBallState.CraftingMoving:
-                // Mouvement géré par DOTween
                 break;
         }
     }
+
     private bool HasCraftModeCollider()
     {
         return GetComponentInChildren<CraftModeCollider>() != null;
     }
+
     private void ClickEvent()
     {
         if (HasCraftModeCollider() && !(GameManager.Instance.selectedBalls.Count > 0 && GameManager.Instance.selectedBalls[0] == this))
-        {
-            //Debug.Log("[BlueBall] Click disabled because CraftModeCollider is present on " + gameObject.name);
             return;
-        }
         if (!isClickable) return;
         if (GameManager.Instance.menuShown) return;
 
         if (GameManager.Instance.CraftMode)
         {
             if (IsMouseOver() && Input.GetMouseButtonDown(0))
-            {
                 ToggleCraftingSelection();
-            }
+
             if (IsMouseOver() && Input.GetMouseButtonDown(1) && !HasCraftModeCollider())
             {
                 Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -244,9 +241,8 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
         }
 
         if (Input.GetMouseButtonDown(0) && IsMouseOver() && !GameManager.Instance.isDragging)
-        {
             Click();
-        }
+
         if (Input.GetMouseButtonDown(1) && IsMouseOver())
         {
             Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -297,9 +293,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
             Debug.Log("[BlueBall] Selecting ball for crafting: " + gameObject.name);
             currentState = BlueBallState.Crafting;
             if (selectionIndicator != null)
-            {
                 selectionIndicator.SetActive(true);
-            }
             if (GameManager.Instance.selectedBalls.Count == 0 && GameManager.Instance.craftModeColliderPrefab != null)
             {
                 GameManager.Instance.currentCraftModeCollider = Instantiate(
@@ -316,24 +310,22 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
     public void CancelCraftingVisual()
     {
         if (selectionIndicator != null)
-        {
             selectionIndicator.SetActive(false);
-        }
         currentState = BlueBallState.Idle;
-        Debug.Log("[RedBall] Crafting visual cancelled for ball: " + gameObject.name);
+        Debug.Log("[BlueBall] Crafting visual cancelled for ball: " + gameObject.name);
         foreach (Transform child in transform)
         {
             if (child.CompareTag("CraftCollider"))
             {
                 Destroy(child.gameObject);
-                Debug.Log("[RedBall] Destroyed CraftCollider child on ball: " + gameObject.name);
+                Debug.Log("[BlueBall] Destroyed CraftCollider child on ball: " + gameObject.name);
             }
         }
     }
 
     public void ApplyCraftForce(Vector2 direction)
     {
-        //inused but keep here
+
     }
 
     public void Click()
@@ -372,16 +364,15 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
             return col.OverlapPoint(mousePos);
         }
     }
+
     private IEnumerator SpawnProp()
     {
         GameObject newObject = Instantiate(gameObject, transform.position, Quaternion.identity);
         newObject.name = gameObject.name;
 
-        // Marquer le duplicata comme non sauvegardé et lui attribuer un nouvel identifiant unique
         SaveableObject so = newObject.GetComponent<SaveableObject>();
         if (so != null)
         {
-         
             so.SetUniqueId(System.Guid.NewGuid().ToString());
         }
 
@@ -389,19 +380,16 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
         if (isInMachine)
         {
             dir = Vector2.down;
-            Debug.Log("[RedBall] SpawnProp direction: " + dir);
+            Debug.Log("[BlueBall] SpawnProp direction: " + dir);
         }
         else
         {
             dir = Random.insideUnitCircle.normalized;
-            Debug.Log("[RedBall] SpawnProp random direction: " + dir);
+            Debug.Log("[BlueBall] SpawnProp random direction: " + dir);
         }
         newObject.GetComponent<Rigidbody2D>().AddForce(dir * force, ForceMode2D.Impulse);
         yield return null;
     }
-
-
-
 
     public string CraftBallType { get { return "BlueBall"; } }
     public Transform Transform { get { return transform; } }
@@ -409,14 +397,8 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
         if (collision.CompareTag("Bumper"))
         {
-            if (m_data.isDragged)
-            {
-                m_data.isDragged = false;
-                GameManager.Instance.isDragging = false;
-            }
             currentState = BlueBallState.Friction;
         }
     }

@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+
     private void Start()
     {
         camControl = Camera.main.GetComponent<CameraController>();
@@ -87,12 +88,17 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if(!NeverCraft)
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetBalls();
+        }
+
+        if (!NeverCraft)
             return;
 
         if (CraftMode || isInTransition) UpdateCraftLine();
 
-        //Place ShapeObject ALWAYS at the centers of all balls:
         if (CraftMode && currentCraftPreview != null && selectedBalls.Count > 0)
         {
             Vector3 center = Vector3.zero;
@@ -160,6 +166,53 @@ public class GameManager : MonoBehaviour
         else if (!menuShown && !camControl.enabled)
             camControl.enabled = true;
     }
+
+    private void ResetBalls()
+    {
+        int ballLayer = LayerMask.NameToLayer("Ball");
+        int objectsLayer = LayerMask.NameToLayer("Objects");
+
+        GameObject firstBall = GameObject.Find("FirstBall");
+        GameObject dot = GameObject.Find("Dot");
+
+        GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
+
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj.layer == ballLayer || obj.layer == objectsLayer)
+            {
+                if (firstBall != null && obj == firstBall)
+                    continue;
+
+                if (dot != null && obj == dot)
+                    continue;
+
+                Destroy(obj);
+            }
+        }
+
+
+        if (firstBall != null && Camera.main != null)
+        {
+            Vector3 center = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, Camera.main.nearClipPlane));
+            center.z = firstBall.transform.position.z; 
+            firstBall.transform.position = center;
+
+
+            ISaveData saveData = firstBall.GetComponent<ISaveData>();
+            if (saveData != null)
+            {
+                saveData.ClickCount = 0;
+            }
+            globalNumber = 0;
+            if (numberText != null)
+            {
+                numberText.text = globalNumber.ToString();
+            }
+        }
+    }
+
+
 
     private IEnumerator StartCraftCooldown()
     {

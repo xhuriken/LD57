@@ -5297,4 +5297,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueId: 
+  uniqueId: 4a2c3a21-03d2-4c5c-9d12-aecf54b7f58a
+  prefabPath: StockMachine
+  shouldSave: 1
