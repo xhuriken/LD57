@@ -111,7 +111,17 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
                 {
                     IdleMovement();
                 }
+                if (Input.GetMouseButtonDown(1) && IsMouseOver())
+                {
+                    Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    dragOffset = transform.position - (Vector3)mouseWorldPos;
+                    m_rb.velocity = Vector2.zero;
+                    GameManager.Instance.isDragging = true;
+                    currentState = GrayBallState.Drag;
+                    m_data.isDragged = true;
+                }
                 break;
+
             case GrayBallState.Drag:
                 if (Input.GetMouseButton(1))
                 {
@@ -134,7 +144,18 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
                 }
                 if (Input.GetMouseButtonUp(1))
                 {
-                    currentState = (GameManager.Instance.CraftMode ? GrayBallState.Craft : (m_rb.isKinematic ? GrayBallState.Inhale : GrayBallState.Idle));
+                    if (m_rb.bodyType == RigidbodyType2D.Dynamic)
+                    {
+                        currentState = (GameManager.Instance.CraftMode ? GrayBallState.Craft : GrayBallState.Inhale);
+                        Debug.Log("[Ball] Clic droit : état remis à " + currentState);
+                    }
+                    else
+                    {
+                        // Si le Rigidbody est Kinematic, comportement normal
+                        currentState = (GameManager.Instance.CraftMode ? GrayBallState.Craft : GrayBallState.Inhale);
+                        Debug.Log("[Ball] Clic droit : état remis à " + currentState + " (Kinematic)");
+                    }
+
                     GameManager.Instance.isDragging = false;
                     m_data.isDragged = false;
                 }
