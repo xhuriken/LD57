@@ -72,6 +72,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
         yield return new WaitForSeconds(1f);
         if (currentState == BlueBallState.Spawn)
         {
+            yield return new WaitForSeconds(1f);
             currentState = BlueBallState.Idle;
             m_rb.velocity = new Vector2(0, oscillationSpeed * direction);
 
@@ -108,8 +109,10 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                 ClickEvent();
                 break;
             case BlueBallState.Idle:
+
                 if (m_data != null && m_data.isInhaled)
                 {
+                    
                     currentState = BlueBallState.Inhale;
                     m_animator.SetTrigger("Inhale");
                     m_rb.velocity = Vector2.zero;

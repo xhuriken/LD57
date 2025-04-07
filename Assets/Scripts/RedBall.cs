@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static BlueBall; // si n�cessaire
 
-public class RedBall : MonoBehaviour, ICraftableBall, INumber
+public class RedBall : MonoBehaviour, ICraftableBall, INumber, IClickMachine
 {
     [Header("Properties")]
     [SerializeField] private int duplicateCount = 3;
@@ -20,7 +20,6 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
     private Data m_data;
 
     [Header("Utils")]
-    public bool isDragged = false;
     public bool isClickable = true;
 
     [Header("Particles/SFX")]
@@ -34,6 +33,8 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
     public RedBallState currentState = RedBallState.Spawn;
 
     public GameObject selectionIndicator;
+
+    public bool isInMachine { get; set; } = false;
 
     private void Start()
     {
@@ -124,11 +125,11 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
                         }
                     }
                 }
-                if (Input.GetMouseButtonUp(1) || (m_data != null && m_data.isInhaled))
+                if (Input.GetMouseButtonUp(1) || (m_data != null && m_data.isInhaled) || isInMachine)
                 {
                     currentState = RedBallState.Idle;
                     GameManager.Instance.isDragging = false;
-                    isDragged = false;
+                    m_data.isDragged = false;
                 }
 
 
@@ -169,7 +170,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
                 dragOffset = transform.position - (Vector3)mouseWorldPos;
                 m_rb.velocity = Vector2.zero;
                 GameManager.Instance.isDragging = true;
-                isDragged = true;
+                m_data.isDragged = true;
                 currentState = RedBallState.Drag;
             }
             return;
@@ -187,7 +188,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
             m_rb.velocity = Vector2.zero;
             GameManager.Instance.isDragging = true;
             currentState = RedBallState.Drag;
-            isDragged = true;
+            m_data.isDragged = true;
         }
     }
 
@@ -309,10 +310,20 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
     {
         GameObject newObject = Instantiate(gameObject, transform.position, Quaternion.identity);
         newObject.name = gameObject.name;
-        Vector2 randomDir = Random.insideUnitCircle.normalized;
-        Debug.Log("[RedBall] SpawnProp random direction: " + randomDir);
-        newObject.GetComponent<Rigidbody2D>().AddForce(randomDir * force, ForceMode2D.Impulse);
+        Vector2 dir;
+        if (isInMachine)
+        {
+            dir = Vector2.down;
+            Debug.Log("[RedBall] SpawnProp random direction: " + dir);
+        } else 
+        {
+            dir = Random.insideUnitCircle.normalized;
+            Debug.Log("[RedBall] SpawnProp random direction: " + dir);
+        }
+        newObject.GetComponent<Rigidbody2D>().AddForce(dir * force, ForceMode2D.Impulse);
         yield return null;
+
+        
     }
     public string CraftBallType { get { return "RedBall"; } }
     public Transform Transform { get { return transform; } }
@@ -322,7 +333,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
     {
         if (collision.CompareTag("Bumper"))
         {
-            isDragged = false;
+            m_data.isDragged = false;
             currentState = RedBallState.Idle;
         }
         if (collision.CompareTag("GrayViolet"))
@@ -345,4 +356,6 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber
         }
 
     }
+
+ 
 }

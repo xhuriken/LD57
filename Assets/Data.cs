@@ -8,11 +8,12 @@ public class Data : MonoBehaviour
     public bool isInhaled = false;
     public bool isInhaledGrayViolet = false;
     public bool isFreeze = false;
-
+    public bool isDragged = false;
     private void Start()
     {
         isInhaled = false;
         isFreeze = false;
+        isDragged = false;
     }
 
 }

@@ -206,7 +206,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duplicateCount: 3
   force: 4
-  isDragged: 0
   isClickable: 1
   as_duplicate: {fileID: 8300000, guid: 62efe3f80ec52df4ab54a4e0ad659bf9, type: 3}
   as_click: {fileID: 8300000, guid: 441a70337c31521438e4c2ccbd4d1bd7, type: 3}
@@ -360,6 +359,7 @@ MonoBehaviour:
   isInhaled: 0
   isInhaledGrayViolet: 0
   isFreeze: 0
+  isDragged: 0
 --- !u!114 &321911111640362464
 MonoBehaviour:
   m_ObjectHideFlags: 0
