@@ -37,7 +37,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber , ISaveData, IClic
     public RedBallState currentState = RedBallState.Spawn;
 
     public GameObject selectionIndicator;
-
+    public bool isSpawned = false;
     public bool isInMachine { get; set; } = false;
 
     private void Start()
@@ -58,6 +58,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber , ISaveData, IClic
         if (currentState == RedBallState.Spawn)
         {
             currentState = RedBallState.Idle;
+            isSpawned = true;
         }
     }
 
@@ -73,6 +74,9 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber , ISaveData, IClic
         }
 
         m_animator.SetBool("isInhaled", m_data.isInhaledGrayViolet);
+        if (isSpawned) { 
+            m_animator.SetBool("isInhaled", isSpawned);
+        }
 
 
         switch (currentState)
@@ -352,6 +356,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber , ISaveData, IClic
         {
             if (m_data != null && !m_data.isInhaledGrayViolet)
             {
+                Debug.Log("[RedBall] Inhaled GrayViolet");
                 m_data.isInhaledGrayViolet = true;
             }
         }
@@ -363,6 +368,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber , ISaveData, IClic
         {
             if (m_data != null && m_data.isInhaledGrayViolet)
             {
+                Debug.Log("[RedBall] Exited GrayViolet");
                 m_data.isInhaledGrayViolet = false;
             }
         }
