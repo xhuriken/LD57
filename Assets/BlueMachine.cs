@@ -157,7 +157,11 @@ public class BlueMachine : MonoBehaviour
     private IEnumerator ExitBall(GameObject ball, Vector3 ballStartPosition, Vector3 targetPosition)
     {
         yield return new WaitForSeconds(1f);
-
+        BlueBall blueBall = ball.GetComponent<BlueBall>();
+        if (blueBall != null && blueBall.currentState != BlueBall.BlueBallState.Friction)
+        {
+            blueBall.currentState = BlueBall.BlueBallState.Friction;
+        }
         ball.transform.SetParent(null);
         Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
         if (rb != null)

@@ -75,7 +75,6 @@ public class BounceWithinZone : MonoBehaviour
             if (blueBall != null && blueBall.currentState != BlueBall.BlueBallState.Friction)
             {
                 blueBall.currentState = BlueBall.BlueBallState.Friction;
-                Debug.Log("[BounceWithinZone] BlueBall state changed to Friction.");
             }
         }
     }

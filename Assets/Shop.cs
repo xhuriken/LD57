@@ -296,7 +296,11 @@ public class Shop : MonoBehaviour
         IClickMachine clickMachine = obj.GetComponent<IClickMachine>();
 
         clickMachine.isInMachine = true;
-        
+        BlueBall blueBall = obj.GetComponent<BlueBall>();
+        if (blueBall != null && blueBall.currentState != BlueBall.BlueBallState.Friction)
+        {
+            blueBall.currentState = BlueBall.BlueBallState.Friction;
+        }
 
         float expelDuration = 1f;
         float elapsed = 0f;

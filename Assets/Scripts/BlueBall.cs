@@ -96,11 +96,24 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber, ISaveData, IClic
         if (isInMachine && m_cc.enabled)
         {
             m_cc.enabled = false;
+            currentState = BlueBallState.Friction;
         }
         else if (!isInMachine && !m_cc.enabled)
         {
             m_cc.enabled = true;
         }
+        if (isInMachine)
+        {
+            currentState = BlueBallState.Friction;
+            m_rb.isKinematic = true;
+        }
+        else
+        {
+            if(m_rb.isKinematic)
+                m_rb.isKinematic = false;
+        }
+
+
         if (Input.GetMouseButtonDown(1) && IsMouseOver() && currentState == BlueBallState.Friction)
         {
             dragOffset = transform.position - (Vector3)Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -411,6 +424,11 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber, ISaveData, IClic
         if (collision.CompareTag("Bumper"))
         {
             currentState = BlueBallState.Friction;
+            if (m_data.isDragged)
+            {
+                m_data.isDragged = false;
+                GameManager.Instance.isDragging = false;
+            }
         }
     }
 
