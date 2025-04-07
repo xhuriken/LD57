@@ -4907,6 +4907,7 @@ MonoBehaviour:
   - Ball
   as_inhale1: {fileID: 8300000, guid: 94d3b028d0d196e44bea5d38e3da931d, type: 3}
   as_inhale2: {fileID: 8300000, guid: fe6db4b60be1ff249a6ab9f9a80c1cce, type: 3}
+  as_cantplace: {fileID: 8300000, guid: 0b8d3d83527f5bb4eb39c91062d744f9, type: 3}
   number: {fileID: 2366108251970807995, guid: 7098357888a775041937e5ffa0dd9db0, type: 3}
 --- !u!114 &5816716308862006155
 MonoBehaviour:

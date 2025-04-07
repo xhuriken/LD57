@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SaveManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2261192224029739356, guid: 036c578222d7bb4449165ea17903f184, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4007550310967023922, guid: 036c578222d7bb4449165ea17903f184, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.1926872
@@ -3118,7 +3122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c7a5746089ea95499d1fc3166c2e0f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugMode: 0
+  DebugMode: 1
   isDragging: 0
   menuShown: 0
   isStarted: 0

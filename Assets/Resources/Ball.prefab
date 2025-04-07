@@ -214,6 +214,7 @@ MonoBehaviour:
   clickParticules: {fileID: 3392309590886141319, guid: c814d5de6fb50104391808ce665735b5, type: 3}
   currentState: 0
   selectionIndicator: {fileID: 3530391252128937447}
+  isSpawned: 0
 --- !u!58 &8049560452109068285
 CircleCollider2D:
   m_ObjectHideFlags: 0
