@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 6760204286343464869}
   - component: {fileID: 6240315418340677334}
   - component: {fileID: 6903084087599600355}
+  - component: {fileID: 4737073208692701767}
   m_Layer: 10
   m_Name: FirstBall
   m_TagString: Ball
@@ -356,6 +357,21 @@ MonoBehaviour:
   as_click: {fileID: 8300000, guid: 441a70337c31521438e4c2ccbd4d1bd7, type: 3}
   duplicateParticules: {fileID: 3392309590886141319, guid: 8855b583bd62a944589b8f82a47818de, type: 3}
   clickParticules: {fileID: 3392309590886141319, guid: c814d5de6fb50104391808ce665735b5, type: 3}
+--- !u!114 &4737073208692701767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3541388686183598437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueId: cab0017f-b41a-4fb4-a91d-672ff969fe29
+  prefabPath: FirstBall
+  shouldSave: 1
 --- !u!1 &6265660854106477879
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2650995808764813015}
   - component: {fileID: 5782779430072653379}
   - component: {fileID: 4179492189190710513}
+  - component: {fileID: 8870458284131251012}
   m_Layer: 7
   m_Name: Zone
   m_TagString: Untagged
@@ -157,3 +158,18 @@ MonoBehaviour:
   Height: 20
   zone: {fileID: 0}
   transitionDuration: 0.5
+--- !u!114 &8870458284131251012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267751509742471869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueId: da12cf99-befd-47a8-8faa-7f38b85d40eb
+  prefabPath: Zone
+  shouldSave: 1

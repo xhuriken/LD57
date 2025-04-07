@@ -3,16 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static BlueBall; // si n�cessaire
+using static BlueBall; 
 
-public class RedBall : MonoBehaviour, ICraftableBall, INumber, IClickMachine
+public class RedBall : MonoBehaviour, ICraftableBall, INumber , ISaveData, IClickMachine
 {
     [Header("Properties")]
     [SerializeField] private int duplicateCount = 3;
     public float force = 2f;
-    private int clickCount = 0;
+    private int clickCount = 0; 
+    public int ClickCount
+        {
+            get { return clickCount; }
+            set { clickCount = value; }
+        }
 
-    // Components
     private Animator m_animator;
     private Rigidbody2D m_rb;
     private CircleCollider2D m_cc;
@@ -68,14 +72,12 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber, IClickMachine
             m_rb.isKinematic = false;
         }
 
-        //Pour la GrayViolet
         m_animator.SetBool("isInhaled", m_data.isInhaledGrayViolet);
 
 
         switch (currentState)
         {
             case RedBallState.Spawn:
-                // On peut aussi d�clencher le clic pendant le spawn si besoin
                 ClickEvent();
                 m_rb.velocity *= 0.99f;
                 if (m_rb.velocity.magnitude < 0.01f)
@@ -97,7 +99,6 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber, IClickMachine
                 ClickEvent();
                 break;
             case RedBallState.Click:
-                // Une fois dans l'�tat Click, la machine � click pourra appeler ActivateClickEvent()
                 currentState = RedBallState.Idle;
                 break;
             case RedBallState.Duplicate:
@@ -110,7 +111,6 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber, IClickMachine
                     transform.position = mouseWorldPos + (Vector2)dragOffset;
                     m_rb.velocity = Vector2.zero;
 
-                    //Verify if the ball is Outside the craft area, if so, deselect it
                     if (GameManager.Instance.CraftMode && GameManager.Instance.currentCraftModeCollider != null)
                     {
                         float dist = Vector2.Distance(GameManager.Instance.currentCraftModeCollider.transform.position, transform.position);
@@ -150,7 +150,6 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber, IClickMachine
     {
         if (HasCraftModeCollider() && !(GameManager.Instance.selectedBalls.Count > 0 && GameManager.Instance.selectedBalls[0] == this))
         {
-            //Debug.Log("[BlueBall] Click disabled because CraftModeCollider is present on " + gameObject.name);
             return;
         }
         if (!isClickable)
@@ -266,7 +265,7 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber, IClickMachine
     }
     public void ApplyCraftForce(Vector2 direction)
     {
-        //inused but keep here
+
     }
 
     public void Click()
@@ -310,21 +309,30 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber, IClickMachine
     {
         GameObject newObject = Instantiate(gameObject, transform.position, Quaternion.identity);
         newObject.name = gameObject.name;
+
+        SaveableObject so = newObject.GetComponent<SaveableObject>();
+        if (so != null)
+        {
+   
+            so.SetUniqueId(System.Guid.NewGuid().ToString());
+        }
+
         Vector2 dir;
         if (isInMachine)
         {
             dir = Vector2.down;
-            Debug.Log("[RedBall] SpawnProp random direction: " + dir);
-        } else 
+            Debug.Log("[RedBall] SpawnProp direction: " + dir);
+        }
+        else
         {
             dir = Random.insideUnitCircle.normalized;
             Debug.Log("[RedBall] SpawnProp random direction: " + dir);
         }
         newObject.GetComponent<Rigidbody2D>().AddForce(dir * force, ForceMode2D.Impulse);
         yield return null;
-
-        
     }
+
+
     public string CraftBallType { get { return "RedBall"; } }
     public Transform Transform { get { return transform; } }
     public int Number { get; private set; } = 1;

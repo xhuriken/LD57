@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 4798050930286366298}
   - component: {fileID: 2441187547069499161}
   - component: {fileID: 3423910492680812167}
-  - component: {fileID: 4559844508647783340}
+  - component: {fileID: 8481671510592335046}
   m_Layer: 10
   m_Name: GrayVioletBall
   m_TagString: Untagged
@@ -264,11 +264,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3d65ce6fd378c24daa8bdc35307eeaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDragged: 0
   as_duplicate: {fileID: 0}
   as_click: {fileID: 0}
   duplicateParticules: {fileID: 0}
   clickParticules: {fileID: 0}
-  isBumped: 0
   pointEffector: {fileID: 3959186784293216594}
   selectionIndicator: {fileID: 426925458921538381}
   SpaceCraftHelp: {fileID: 0}
@@ -334,7 +334,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &4559844508647783340
+--- !u!114 &8481671510592335046
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -343,13 +343,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5643749443440215637}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4dd00799cce2d4a4889b6309ec07fa51, type: 3}
+  m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInhaled: 0
-  isInhaledGrayViolet: 0
-  isFreeze: 0
-  isDragged: 0
+  uniqueId: 041ecee1-5008-4f32-9aa3-c5fabccdb8cb
+  prefabPath: GrayVioletBall
+  shouldSave: 1
 --- !u!1001 &7088214864070843361
 PrefabInstance:
   m_ObjectHideFlags: 0

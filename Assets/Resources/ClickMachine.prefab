@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6033427864317067302}
   - component: {fileID: 2552600518749089057}
   - component: {fileID: 5648069591304651140}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Finger2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 193035743520962345}
   - component: {fileID: 1601403823657128666}
   - component: {fileID: 8047919800335448776}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Finger3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 7913830748751973760}
   - component: {fileID: 5917669134795829307}
   - component: {fileID: 7239443097085471456}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Clicker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -421,7 +421,8 @@ GameObject:
   - component: {fileID: 8323270969524028276}
   - component: {fileID: 3202965687399724122}
   - component: {fileID: 1487867790185925472}
-  m_Layer: 0
+  - component: {fileID: 5606025221085426802}
+  m_Layer: 9
   m_Name: ClickMachine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -656,6 +657,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5606025221085426802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4589521823684586251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueId: 2e2965db-f4c0-43ef-aa89-9c77102040fb
+  prefabPath: ClickMachine
+  shouldSave: 1
 --- !u!1 &5843613979685113924
 GameObject:
   m_ObjectHideFlags: 0
@@ -668,7 +684,7 @@ GameObject:
   - component: {fileID: 6959296757235203745}
   - component: {fileID: 418238801207962789}
   - component: {fileID: 721409716313631879}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Finger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -800,7 +816,7 @@ GameObject:
   - component: {fileID: 3708038937449589828}
   - component: {fileID: 121682346883762771}
   - component: {fileID: 6920234380529371872}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Bordure
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1030,7 +1046,7 @@ GameObject:
   - component: {fileID: 5255386585931575376}
   - component: {fileID: 4411725146547961109}
   - component: {fileID: 4712212624362050406}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Finger4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1172,7 +1188,7 @@ GameObject:
   - component: {fileID: 5514608736187077156}
   - component: {fileID: 4581324346536554053}
   - component: {fileID: 1605046278255548040}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Finger1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
