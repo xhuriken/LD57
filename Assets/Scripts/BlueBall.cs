@@ -21,7 +21,6 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
     private Data m_data;
 
     [Header("Utils")]
-    public bool isDragged = false;
     public bool isClickable = true;
 
     [Header("Particles/SFX")]
@@ -98,7 +97,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
             dragOffset = transform.position - (Vector3)Camera.main.ScreenToWorldPoint(Input.mousePosition);
             m_rb.velocity = Vector2.zero;
             GameManager.Instance.isDragging = true;
-            isDragged = true;
+            m_data.isDragged = true;
             currentState = BlueBallState.Drag;
             Debug.Log("[BlueBall] Forced Drag from Friction state");
         }
@@ -171,14 +170,14 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                 {
                     currentState = BlueBallState.Idle;
                     GameManager.Instance.isDragging = false;
-                    isDragged = false;
+                    m_data.isDragged = false;
                     originY = transform.position.y;
                     topY = originY + amplitude;
                     bottomY = originY - amplitude;
                 }
                 break;
             case BlueBallState.Friction:
-                if (isDragged)
+                if (m_data.isDragged)
                 {
                     currentState = BlueBallState.Drag;
                     break;
@@ -236,7 +235,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
                 dragOffset = transform.position - (Vector3)mouseWorldPos;
                 m_rb.velocity = Vector2.zero;
                 GameManager.Instance.isDragging = true;
-                isDragged = true;
+                m_data.isDragged = true;
                 currentState = BlueBallState.Drag;
             }
             return;
@@ -252,7 +251,7 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
             dragOffset = transform.position - (Vector3)mouseWorldPos;
             m_rb.velocity = Vector2.zero;
             GameManager.Instance.isDragging = true;
-            isDragged = true;
+            m_data.isDragged = true;
             currentState = BlueBallState.Drag;
 
             originY = transform.position.y;
@@ -390,7 +389,11 @@ public class BlueBall : MonoBehaviour, ICraftableBall, INumber
 
         if (collision.CompareTag("Bumper"))
         {
-            isDragged = false;
+            if (m_data.isDragged)
+            {
+                m_data.isDragged = false;
+                GameManager.Instance.isDragging = false;
+            }
             currentState = BlueBallState.Friction;
         }
     }

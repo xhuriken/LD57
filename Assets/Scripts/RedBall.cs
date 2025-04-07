@@ -333,7 +333,11 @@ public class RedBall : MonoBehaviour, ICraftableBall, INumber, IClickMachine
     {
         if (collision.CompareTag("Bumper"))
         {
-            m_data.isDragged = false;
+            if (m_data.isDragged)
+            {
+                m_data.isDragged = false;
+                GameManager.Instance.isDragging = false;
+            }
             currentState = RedBallState.Idle;
         }
         if (collision.CompareTag("GrayViolet"))
