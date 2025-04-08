@@ -5023,7 +5023,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   identity:
     canBuy: 1
-    Price: 5
+    Price: 10
     instanceBall: {fileID: 3504687067306247434, guid: 0737577e52e5fe34bae0058ccb14d75f, type: 3}
   priceText: {fileID: 4655174267754845846}
   spawnTargetPosition: {x: 0, y: 0, z: 0}
@@ -11778,7 +11778,7 @@ GameObject:
   - component: {fileID: 8498876915537487684}
   - component: {fileID: 1026994070947711013}
   m_Layer: 0
-  m_Name: Yellow
+  m_Name: White
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11814,7 +11814,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendMode: 1
   scaleMode: 0
-  color: {r: 0.68669534, g: 0.69803923, b: 0, a: 1}
+  color: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
   detailLevel: 2
   culling: 0
   boundsPadding: 0
@@ -11936,9 +11936,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   identity:
-    canBuy: 0
-    Price: 15
-    instanceBall: {fileID: 3504687067306247434, guid: 0737577e52e5fe34bae0058ccb14d75f, type: 3}
+    canBuy: 1
+    Price: 150
+    instanceBall: {fileID: 3541388686183598437, guid: ea26a3da0f86f914b9e165af0bc47293, type: 3}
   priceText: {fileID: 7898040596622804932}
   spawnTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!58 &1026994070947711013
@@ -12463,6 +12463,7 @@ GameObject:
   - component: {fileID: 2825946922195441734}
   - component: {fileID: 4585922656318358216}
   - component: {fileID: 5212167696327603395}
+  - component: {fileID: 6399370937986373538}
   m_Layer: 9
   m_Name: Shop
   m_TagString: Untagged
@@ -12953,6 +12954,21 @@ PointEffector2D:
   m_ForceMode: 0
   m_Drag: 0
   m_AngularDrag: 0
+--- !u!114 &6399370937986373538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6398136477132450388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166ca3bc2bacd14ca20130b6e505ea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueId: ec29b110-39ca-4dc3-9a75-2476d1f7ee55
+  prefabPath: Shop
+  shouldSave: 1
 --- !u!1 &7563670464963973911
 GameObject:
   m_ObjectHideFlags: 0

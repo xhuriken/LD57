@@ -65,20 +65,15 @@ public class GrayVioletBall : MonoBehaviour, ICraftableBall
             {
                 float width = zoneScript.Width;
                 float height = zoneScript.Height;
-                int side = Random.Range(0, 4);
+                int side = Random.Range(0, 2);
                 Vector3 spawnPoint = Vector3.zero;
                 switch (side)
                 {
-                    case 0: // haut
-                        spawnPoint = new Vector3(Random.Range(-width / 2f, width / 2f), height / 2f, 0);
-                        break;
-                    case 1: // bas
+
+                    case 0: // bas
                         spawnPoint = new Vector3(Random.Range(-width / 2f, width / 2f), -height / 2f, 0);
                         break;
-                    case 2: // gauche
-                        spawnPoint = new Vector3(-width / 2f, Random.Range(-height / 2f, height / 2f), 0);
-                        break;
-                    case 3: // droite
+                    case 1: // droite
                         spawnPoint = new Vector3(width / 2f, Random.Range(-height / 2f, height / 2f), 0);
                         break;
                 }

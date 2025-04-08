@@ -45,16 +45,16 @@ public class Zone : MonoBehaviour
             StartCoroutine(SmoothResize(targetWidth, targetHeight, transitionDuration));
         }
 
-        // Sauvegarder la taille de la zone avec K
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            SaveZone();
-        }
-        // Charger la taille de la zone avec L
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            LoadZone();
-        }
+        //// Sauvegarder la taille de la zone avec K
+        //if (Input.GetKeyDown(KeyCode.K))
+        //{
+        //    SaveZone();
+        //}
+        //// Charger la taille de la zone avec L
+        //if (Input.GetKeyDown(KeyCode.L))
+        //{
+        //    LoadZone();
+        //}
     }
 
     public IEnumerator SmoothResize(float targetWidth, float targetHeight, float duration)

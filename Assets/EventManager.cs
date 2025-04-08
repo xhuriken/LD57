@@ -57,7 +57,7 @@ public class EventManager : MonoBehaviour
         if (ge.eventName == "GrayVioletBall")
         {
             var redBalls = FindObjectsOfType<RedBall>();
-            return (redBalls.Length >= 2);
+            return (redBalls.Length >= 10);
         }
         return false;
     }
