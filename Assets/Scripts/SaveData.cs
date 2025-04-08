@@ -16,6 +16,7 @@ public class TransformData
 [Serializable]
 public class SceneData
 {
-    public int playerPoints;             
+    public int playerPoints;
+    public bool neverCraft;
     public List<TransformData> transforms = new List<TransformData>(); 
 }

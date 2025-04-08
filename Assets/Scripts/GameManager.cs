@@ -577,4 +577,6 @@ public class GameManager : MonoBehaviour
         return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
     }
 
+    
+
 }

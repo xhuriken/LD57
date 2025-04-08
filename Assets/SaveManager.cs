@@ -35,8 +35,14 @@ public class SaveManager : MonoBehaviour
     public void SaveScene()
     {
         SceneData sceneData = new SceneData();
+
+        // Sauvegarde du score global
         sceneData.playerPoints = GameManager.Instance.globalNumber;
 
+        // Sauvegarde de la variable NeverCraft
+        sceneData.neverCraft = GameManager.Instance.NeverCraft;
+
+        // Sauvegarde des objets (existant déjà)
         SaveableObject[] saveableObjects = GameObject.FindObjectsOfType<SaveableObject>();
         foreach (SaveableObject so in saveableObjects)
         {
@@ -50,6 +56,7 @@ public class SaveManager : MonoBehaviour
             data.scale = so.transform.localScale;
             data.prefabPath = so.PrefabPath;
 
+            // Sauvegarde du clickCount (via l'interface ISaveData)
             ISaveData saveData = so.GetComponent<ISaveData>();
             if (saveData != null)
             {
@@ -59,7 +66,6 @@ public class SaveManager : MonoBehaviour
             {
                 data.clickCount = 0;
             }
-
             sceneData.transforms.Add(data);
         }
 
@@ -79,15 +85,21 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(filePath);
         SceneData sceneData = JsonUtility.FromJson<SceneData>(json);
 
+        // Rétablir les données globales
         GameManager.Instance.globalNumber = sceneData.playerPoints;
         GameManager.Instance.numberText.text = sceneData.playerPoints.ToString();
 
+        // Rétablir la variable NeverCraft
+        GameManager.Instance.NeverCraft = sceneData.neverCraft;
+
+        // Récupérer les objets présents dans la scène et mettre à jour ou instancier les objets sauvegardés
         SaveableObject[] currentSaveables = GameObject.FindObjectsOfType<SaveableObject>();
         Dictionary<string, SaveableObject> saveableDict = new Dictionary<string, SaveableObject>();
         foreach (SaveableObject so in currentSaveables)
         {
             saveableDict[so.UniqueId] = so;
         }
+
 
         HashSet<string> savedIds = new HashSet<string>();
         foreach (TransformData data in sceneData.transforms)
@@ -100,11 +112,10 @@ public class SaveManager : MonoBehaviour
                 so.transform.position = data.position;
                 so.transform.rotation = data.rotation;
                 so.transform.localScale = data.scale;
-
-                ISaveData saveData = so.GetComponent<ISaveData>();
-                if (saveData != null)
+                ISaveData sd = so.GetComponent<ISaveData>();
+                if (sd != null)
                 {
-                    saveData.ClickCount = data.clickCount;
+                    sd.ClickCount = data.clickCount;
                 }
             }
             else
@@ -136,6 +147,9 @@ public class SaveManager : MonoBehaviour
             }
         }
 
+
+
+        // Détruire les objets présents qui n'étaient pas sauvegardés
         foreach (KeyValuePair<string, SaveableObject> kvp in saveableDict)
         {
             if (!savedIds.Contains(kvp.Key))
@@ -145,5 +159,22 @@ public class SaveManager : MonoBehaviour
             }
         }
         Debug.Log("Scène chargée !");
+    
+
+
+        foreach (KeyValuePair<string, SaveableObject> kvp in saveableDict)
+        {
+            if (!savedIds.Contains(kvp.Key))
+            {
+                Debug.Log("Destruction de l'objet non sauvegardé : " + kvp.Value.gameObject.name);
+                Destroy(kvp.Value.gameObject);
+            }
+        }
+        Debug.Log("Scène chargée !");
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveScene();
     }
 }
